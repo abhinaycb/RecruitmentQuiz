@@ -1,0 +1,28 @@
+.zoom_on_hover:hover {
+    -ms-transform: scale(1.1); /* IE 9 */
+    -webkit-transform: scale(1.1); /* Safari 3-8 */
+    transform: scale(1.1);
+    margin: "40px 40px 130px 40px";
+}
+
+.zoom_on_hover {
+  transition: transform 1s;
+}
+
+.zoom_on_hover_outer:hover {
+    -ms-transform: scaleX(1.2); /* IE 9 */
+    -webkit-transform: scaleX(1.2); /* Safari 3-8 */
+    transform: scaleX(1.2);
+}
+
+.zoom_on_hover_outer {
+  transition: transform 0.6s;
+}
+
+.card_cover{
+    background-image: -webkit-linear-gradient(right, #ff8d8d, #e90079);
+    background-image: -moz-linear-gradient(right, #ff8d8d, #e90079);
+    background-image: -ms-linear-gradient(right, #ff8d8d, #e90079);
+    background-image: -o-linear-gradient(right, #ff8d8d, #e90079);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#ff8d8d', EndColorStr='#e90079')";
+}
