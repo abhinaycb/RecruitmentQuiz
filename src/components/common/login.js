@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { browserHistory } from 'react-router'
 import Paper from 'material-ui/Paper';
 import { RaisedButton, TextField } from 'material-ui';
-import { loginToFirebase } from '../../NetworkCalls.js'
+import { loginToFirebase } from '../NetworkCalls.js'
 import * as firebase from 'firebase';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import logo from '../../Assets/loader.gif'
@@ -20,8 +20,13 @@ const styleCopy = {
     width: "60%",
     textAlign: 'center',
     display: 'inline-block',
-    backgroundColor: 'rgb(10, 10, 10)',
 };
+
+const loaderStyle = {
+    height: "50%",
+    width: "50%",
+};
+
 const style1 = {
    color: "rgb(0, 188, 212)",
   
@@ -112,15 +117,16 @@ class Login extends Component {
       <div>
         <center>
         <div>
-        {this.state.isLoading && <img src={logo} alt={"loading"} style={styleCopy} />}
+        {this.state.isLoading && <img src={logo} alt={"loading"} style={loaderStyle}/>}
         </div>
         <MuiThemeProvider>
+        {!this.state.isLoading &&
           <Paper style={this.state.isLoading ? styleCopy : style} zDepth={3} >
             <h1 style={style1}>Login</h1>
             <TextField type="email" hintText="UserEmail" floatingLabelText="Email" ref="txte" /> <br />
             <TextField type="password" hintText="Password" floatingLabelText="Password" ref="pass" /> <br />
             <br /><RaisedButton onClick={this.login} primary={true}><span style={style2}> Login </span></RaisedButton><br />
-          </Paper>
+          </Paper> }
       </MuiThemeProvider>
       </center>
       </div>
