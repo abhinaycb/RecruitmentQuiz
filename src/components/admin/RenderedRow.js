@@ -1,116 +1,121 @@
 import React, { Component } from 'react';
-import { Dialog, FlatButton, Tabs, Tab,  TableRow, TableRowColumn } from 'material-ui';
+import { Dialog, FlatButton, Tabs, Tab, TableRow, TableRowColumn } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import * as firebase from 'firebase';
+import {getQuizDataForUnattemptedQuizes,getScoreDataForAttemptedQuizzes} from '../../NetworkCalls.js';
 
 export default class RenderedRow extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
             open: false,
             quizes:[],
             quizAttemptedScoreData:[],
-        }
+        };
 
-        this._handleOpen = this._handleOpen.bind(this)
+        this._handleOpen = this._handleOpen.bind(this);
         this._handleClose = this._handleClose.bind(this)
     }
 
     componentDidMount() {
-        var self = this;
-        var attemptedQuizes = [];
-        var unAttemptedQuizes = [];
-        for(var quizId of Object.keys(self.props.row.quizIds)) {
-            if(self.props.row.quizIds[quizId]) {
+        const self = this;
+        let attemptedQuizes = [];
+        let unAttemptedQuizes = [];
+        for(let quizId of Object.keys(self.props.data.quizIds)) {
+            if(self.props.data.quizIds[quizId]) {
                 attemptedQuizes.push(quizId);
             }else{
                 unAttemptedQuizes.push(quizId);
             }
         }
-
-        for(var attemptedQuizId of attemptedQuizes) {
-            firebase.database().ref('Score').child(attemptedQuizId).on('value',(data)=>{
-                var resultValue = data.val()
-                self.setState({quizAttemptedScoreData: [...self.state.quizAttemptedScoreData,resultValue]})
+        let arrayOfPromisesForScore = getScoreDataForAttemptedQuizzes(attemptedQuizes)
+        for(let promise of arrayOfPromisesForScore){
+            promise.then((data)=>{
+                const resultValue = data.val()
+                if(resultValue!==null && resultValue!==undefined)
+                {
+                    self.setState({quizAttemptedScoreData: [...self.state.quizAttemptedScoreData, resultValue]})
+                }
+            }).catch((error)=>{
+                alert(error);
             })
         }
 
-        firebase.database().ref('QuizDetail').on('value',(data) => {
-            var quizes = Object.values(data.val());
-            self.setState({quizes:quizes});
-        })
+        let arrayOfPromisesForQuizDetail = getQuizDataForUnattemptedQuizes(unAttemptedQuizes)
+        for(let promise of arrayOfPromisesForQuizDetail){
+            promise.then((data)=>{
+                if(data!==undefined && data.val()!==undefined)
+                {
+                    const quizes = Object.values(data.val());
+                    self.setState({quizes: quizes});
+                }
+            }).catch((error)=>{
+                alert(error);
+            })
+        }
     }
 
-    _handleOpen() {
+    _handleOpen(index) {
         this.setState({
             open: true
         })
+        this.props.callbackFunction(index)
     }
 
     _handleClose() {
         this.setState({
             open: false
         })
+        this.props.callbackFunction(undefined);
     }
 
     render() {
-        var self = this
-        const {
-            children,
-            ...rest
-        } = this.props
+        const self = this;
+        let {
+            children, _, ...rest
+        } = this.props;
 
         const actions = [
-            <FlatButton
-             label="Cancel"
-             primary={true}
-             onClick={this._handleClose}
-            />,
-        ]
-
+            <FlatButton label="Cancel" primary={true} onClick={this._handleClose}/>,
+         ]
         return (
             <TableRow {...rest}>
                 {children[0]}
-                 <TableRowColumn>{rest.row["name"]}</TableRowColumn>
-                 <TableRowColumn>{rest.row["email"]}</TableRowColumn>
-                 <TableRowColumn>
-                    <FlatButton
-                    icon={<ContentAdd/>}
-                    onClick={this._handleOpen}
-                 />
+                <TableRowColumn>{rest.data["name"]}</TableRowColumn>
+                <TableRowColumn>{rest.data["email"]}</TableRowColumn>
+                <TableRowColumn>
+                    <FlatButton icon={<ContentAdd/>} onClick={self._handleOpen}/>
+                    <Dialog actions={actions} autoScrollBodyContent={true} open={self.state.open}
+                        onRequestClose={self._handleClose} modal={true} title='UserDetail'>
+                        <Tabs>
+                            <Tab label="Existing Quizes" >
+                                <div>
+                                    <h2>Attempted Quizes</h2>
+                                    <table>
+                                        <tbody>
+                                            {self.state.quizes.map((row, index) => (
+                                                 <tr key={index}>
+                                                    <td>{row['Title']}</td>
+                                                    <td>{row['Totalmarks']} </td>
+                                                    <td>{row['Totalmarks']}</td>
+                                                </tr>
+                                            ))}
+                                          </tbody>
+                                    </table>
+                                </div>
+                            </Tab>
+                            <Tab label="Invite To A Quiz" >
+                                <div>
+                                    <h2>QuizLists</h2>
+                                    <p>
+                                    {self.state.quizAttemptedScoreData}
+                                    </p>
+                                </div>
+                            </Tab>
+                        </Tabs>
+                    </Dialog>
                 </TableRowColumn>
-
-        <Dialog
-        actions={actions}
-        autoScrollBodyContent={true}
-        open={this.state.open}
-        onRequestClose={this._handleClose}
-        modal={false}
-        title='UserDetail'
-            >
-            <Tabs>
-                <Tab label="Existing Quizes" >
-                        <div>
-                        <h2>Attempted Quizes</h2>
-                        <tr>
-                         {self.state.quizes.map((row, index) => ( <div><td>{row['Title']}</td> <td>{row['Totalmarks']} </td> <td>{row['Totalmarks']}</td></div> ))}
-                        </tr>
-                        </div>
-                </Tab>
-
-                <Tab label="Invite To A Quiz" >
-                    <div>
-                        <h2>QuizLists</h2>
-                        <p>
-                            {self.state.quizAttemptedScoreData}
-                       </p>
-                    </div>
-                 </Tab>
-
-          </Tabs>
-        </Dialog>
-        </TableRow>
-        )
+            </TableRow>
+         )
     }
 }

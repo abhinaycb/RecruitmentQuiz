@@ -12,29 +12,28 @@ class NoQuizes extends React.Component {
             don: [],
             count: 0,
         }
-     
+
     }
 
     componentWillMount() {
-        var don = [];
+        let don = [];
         firebase.database().ref('QuizDetail/' ).on('value', (data) => {
             let obj = data.val();
-            for (var prop in obj!==null ? obj : {} ){
+            for (let prop in obj!==null ? obj : {} ){
                 if(obj.hasOwnProperty(prop)) {
                     don.push(obj[prop]);
                 }
-               
+
                 this.setState({
                     don: don
                 })
             }
         })
         let a = this.state.count + 1;
-        this.setState({ count : a}) 
+        this.setState({ count : a})
     }
 
     render() {
-   
         return (
             <div>
                 <MuiThemeProvider>

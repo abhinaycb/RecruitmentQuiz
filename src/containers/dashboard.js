@@ -8,10 +8,10 @@ class Dashboard extends Component {
         return (<div>
             
             
-            <AppBar title="This is Dashboard"></AppBar>
-            <Link to="/dashboard/profile">Profile</Link>
-            <Link to="/dashboard/about">About</Link>
-            <Link to="/dashboard/contact">Contact</Link>
+            <AppBar; title="This is Dashboard"></AppBar>
+            <Link; to="/dashboard/profile">Profile</Link>
+            <Link; to="/dashboard/about">About</Link>
+            <Link; to="/dashboard/contact">Contact</Link>;
 
             {this.props.children}
         </div>)

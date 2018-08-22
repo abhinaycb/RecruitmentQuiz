@@ -11,17 +11,11 @@ const style = {
     padding: 20,
      margin: "20px 0px 20px 0px",
 };
-const style1 = {
-   color: "rgb(0, 188, 212)",
-  
-};
-const style2 = {
-   color: "white",
-};
+
 class Signup extends Component {
 
     constructor(props) {
-        super(props)
+        super(props);
         this.signup = this.signup.bind(this);
     }
 
@@ -30,41 +24,34 @@ class Signup extends Component {
         const name = this.refs.name.getValue();
         const email = this.refs.txte.getValue();
         const pass = this.refs.pass.getValue();
-        console.log(name, email, pass)
+        console.log(name, email, pass);
        
         signupWithFirebase(email,pass).then((result) => {
             let userId = firebase.auth().currentUser.uid;
-            // let userDetail = {
-            //     username: name,
-            //     useremail: email,
-            //     userpass: pass
-            // }
-            alert("Congratulations "+name)
-            saveUserInFirebase(name,email,userId)
-            global.currentComponent.setState({value: 'Logout'})
+            alert("Congratulations "+name);
+            saveUserInFirebase(name,email,userId);
+            global.currentComponent.setState({value: 'Logout'});
             localStorage.setItem("userId",userId);
             browserHistory.push('/Start')
         })
         .catch(function (error) {
             // Handle Errors here.
-            alert(error.message)
-            alert(error.code)      
+            alert(error.message || error.data);
         });
     }
 
     render() {
         return (
-            <center>
-                <div>
+                <div style={{'align':'center'}}>
                     <Paper style={style} zDepth={3} >
-                     <h1  style={style1}>Signup</h1>
-                        <TextField type="text" hintText="Name" floatingLabelText="Full Name" ref="name" /> <br />
+                        <h1  style={{'color': "rgb(0, 188, 212)"}}>Signup</h1>
+                        <TextField type="text" hintText="Name" floatingLabelText="Full Name" ref="name"/> <br/>
                         <TextField type="email" hintText="Email" floatingLabelText="E-mail" ref="txte" /> <br />
                         <TextField type="password"  hintText="Password" floatingLabelText="Password" ref="pass" /><br /><br />
-                        <RaisedButton primary={true} onClick={this.signup} ><span style={style2}> SIGNUP </span>  </RaisedButton>
+                        <RaisedButton primary={true} onClick={this.signup} ><span style={{'color': "white"}}> SIGNUP </span>  </RaisedButton>
                     </Paper>
                 </div>
-            </center>)
+        )
     }
 }
 export default Signup;

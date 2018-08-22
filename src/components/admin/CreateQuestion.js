@@ -19,24 +19,16 @@ const style2 = {
     color: "white",
 };
 
-
 export default class CreateQuestion extends React.Component {
 
     constructor(props) {
-        super(props)
-       // this.setState(props.location.state)
-        this.state = {addedQuestionArray:[],detail:props.location.state.detail}
-        console.log(this.state)
-        this.next = this.next.bind(this);
-        this.next1 = this.next1.bind(this);
-        this.sendThru = this.sendThru.bind(this);
+        super(props);
+        this.onClickSubmitQuiz = this.onClickSubmitQuiz.bind(this);
+        this.onClickNextQuestion = this.onClickNextQuestion.bind(this);
+        this.state = {addedQuestionArray:[],detail:props.location.state.detail};
     }
 
-    sendThru() {
-        console.log("hello world",this.refs.op1)
-    }
-
-    next(ev) {
+    onClickSubmitQuiz(ev) {
         ev.preventDefault();
         const Question = this.refs.Question.getValue();
         const op1 = this.refs.op1.getValue();
@@ -52,22 +44,22 @@ export default class CreateQuestion extends React.Component {
             op3: op3,
             op4: op4,
             Answer: Answer
-        }
+        };
 
         if (String(Question) === "" || String(op1) === "" || String(op2) === "" || String(op3) === "" || String(op4) === "" || String(Answer) === "") {
             alert("Please Fill Required Fields")
         }
         else{
-            var newQuestionsArray = this.state.addedQuestionArray
-            newQuestionsArray.push(QuizQuestion)
-            this.setState({addedQuestionArray: newQuestionsArray})
-            saveQuizDataIntoServer(this.state.detail,newQuestionsArray)
+            let newQuestionsArray = this.state.addedQuestionArray;
+            newQuestionsArray.push(QuizQuestion);
+            this.setState({addedQuestionArray: newQuestionsArray});
+            saveQuizDataIntoServer(this.state.detail,newQuestionsArray);
             browserHistory.push('/Admin')
         }
         ev.preventDefault();
     }
 
-    next1(ev) {
+    onClickNextQuestion(ev) {
         ev.preventDefault();
         const Question = this.refs.Question.getValue();
         const op1 = this.refs.op1.getValue();
@@ -83,17 +75,14 @@ export default class CreateQuestion extends React.Component {
             op3: op3,
             op4: op4,
             Answer: Answer
-        }
+        };
 
         if(Question === "" || op1 === "" || op2 === "" || op3 ==="" || op4 === "" || Answer === ""){
             alert("Please Fill Required Fields");
             this.refs.Question.input.focus()
         }
         else{
-            var newQuestionsArray = this.state.addedQuestionArray
-            newQuestionsArray.push(QuizQuestion)
-            this.setState({addedQuestionArray: newQuestionsArray})
-            
+            this.setState({addedQuestionArray: [...this.state.addedQuestionArray,QuizQuestion]});
             this.refs.Question.input.value = " ";
             this.refs.op1.input.value = " ";
             this.refs.op2.input.value = " ";
@@ -118,10 +107,8 @@ export default class CreateQuestion extends React.Component {
                                 <TextField type="text" hintText="Option 3" floatingLabelText="Option 3" ref="op3" /><br />
                                 <TextField type="text" hintText="Option 4" floatingLabelText="Option 4" ref="op4" /><br /><br />
                                 <TextField type="text" hintText="Answer" floatingLabelText="Answer" ref="Answer" /><br /><br />
-
-                                <RaisedButton disabled={parseInt(this.state.detail.TotalQuestion,10) - 1 === this.state.addedQuestionArray.length} primary={true}  onClick={this.next1} style={style1} ><span style={style2}> Add More+ </span>  </RaisedButton>
-                                <RaisedButton disabled={parseInt(this.state.detail.TotalQuestion,10) - 1 !== this.state.addedQuestionArray.length} primary={true}  onClick={this.next} style={style1} ><span style={style2}> Save Quiz </span>  </RaisedButton>
-
+                                <RaisedButton disabled={parseInt(this.state.detail.TotalQuestion,10) - 1 === this.state.addedQuestionArray.length} primary={true}  onClick={this.onClickNextQuestion} style={style1} ><span style={style2}> Add More+ </span>  </RaisedButton>
+                                <RaisedButton disabled={parseInt(this.state.detail.TotalQuestion,10) - 1 !== this.state.addedQuestionArray.length} primary={true}  onClick={this.onClickSubmitQuiz} style={style1} ><span style={style2}> Save Quiz </span>  </RaisedButton>
                             </Paper>
                         </center>
                     </div>

@@ -1,137 +1,130 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router'
-import Paper from 'material-ui/Paper';
-import { RaisedButton, TextField } from 'material-ui';
-import { loginToFirebase } from '../NetworkCalls.js'
+import { RaisedButton, TextField, Paper, MuiThemeProvider } from 'material-ui';
+import { loginToFirebase, getUserDataForUser } from '../../NetworkCalls.js';
 import * as firebase from 'firebase';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import logo from '../../Assets/loader.gif'
+import logo from '../../Assets/newloader.gif';
+// import {CreateMuiTheme} from 'material-ui';
 
-const style = {
-  height: "600px",
-  width: "60%",
-  margin: "20px 20px",
-  textAlign: 'center',
-  display: 'inline-block',
-};
-
-const styleCopy = {
-    height: "650px",
+const loginPaperStyle = {
+    display: 'Inline-Box',
+    height: "600px%",
     width: "60%",
-    textAlign: 'center',
-    display: 'inline-block',
+    border: 'solid black',
+    backgroundColor:'#EAC688',
+    alignContent: 'center',
+    alignItems: 'flex-end',
+    margin: '5% 20% 5% 20%',
+    justifyContent: 'centre',
 };
 
 const loaderStyle = {
-    height: "50%",
-    width: "50%",
-};
-
-const style1 = {
-   color: "rgb(0, 188, 212)",
-  
-};
-const style2 = {
-   color: "white",
-  
+    // height: "350px",
+    width: "30%",
+    margin: '160px auto'
 };
 
 class Login extends Component {
-  constructor(props) {
-    super(props);
-    this.login = this.login.bind(this);
-    this.state = {
-      value: "Create",
-      isLoading: false,
+    constructor(props) {
+        super(props);
+        this.onLoginClicked = this.onLoginClicked.bind(this);
+        this.state = {
+          textValue: '', passwordValue: '', isLoading: false,error: false, errorObject: undefined
+        }
     }
-  }
 
-  componentDidMount() {
-      if(this.refs.txte.getValue() !== "<" || this.refs.pass.getValue() !== "<") {
-          this.refs.txte.text = "";
-          this.refs.pass.text = "";
-      }
-  }
+    componentDidMount() {
+        if(this.refs.txte.getValue() !== "" || this.refs.pass.getValue() !== "") {
+            this.refs.txte.focus();
+            this.refs.pass.focus()
+        }
+    }
 
-  login(ev) {
-    ev.preventDefault();
-    const email = this.refs.txte.getValue();
-    const pass = this.refs.pass.getValue();
+    onLoginClicked(ev) {
+          ev.preventDefault();
+          const self = this;
+          const email = this.refs.txte.getValue();
+          const pass = this.refs.pass.getValue();
 
-    this.setState({isLoading:true});
+          this.setState({isLoading: true});
 
-    loginToFirebase(email,pass).then((result) => {
-        let userId = firebase.auth().currentUser.uid;
-        global.currentComponent.setState({value: 'Logout'});
-        localStorage.setItem("userId",userId);
+          loginToFirebase(email, pass).then((result) => {
+              const currentUser = firebase.auth().currentUser;
+              if (currentUser === undefined && currentUser.uid === undefined) {
+                  self.setState({isLoading: false});
+                  return;
+              }
+              getUserDataForUser(currentUser).then((data) => {
+                  const userDetail = data.val();
+                  const quizIds = Object.keys(userDetail['quizIds']);
+                  if (!userDetail.hasOwnProperty('admin') || userDetail['admin'] === false) {
+                        global.currentComponent.setState({value: 'Logout'});
+                        localStorage.setItem("userId", currentUser.uid);
+                      if (quizIds === null || quizIds.length === 0) {
+                          self.setState({isLoading: false});
+                      }else {
+                          self.setState({isLoading:false},(data) => (
+                              browserHistory.push({
+                                  pathname: '/QuizesDisplayPage',
+                                  search: '',
+                                  state: {
+                                      'quizIdsArray': quizIds
+                                  }
+                              })
+                          ));
+                      }
+                  } else {//admin case
+                        global.currentComponent.setState({value: 'Logout'});
+                        localStorage.setItem("userId", currentUser.uid);
+                        localStorage.setItem("isAdmin", true);
+                        browserHistory.push("/Admin");
+                  }
+              }).catch(function (error) {
+                  // Handle Errors here.
+                  //self.setState({isLoading: false,error: true,errorObject:error});
+              });
+          }).catch(function (error) {
+              // Handle Errors here.
+              //self.setState({isLoading: false,error: true, errorObject:error});
+          });
+    }
 
-        firebase.database().ref('users').child(userId).on('value', (data) => {
-                var userDetail = data.val();
-                var quizIds = Object.keys(userDetail['quizIds']);
-                var quizDataArray = [];
-                if(quizIds === null || quizIds.length === 0) {
-                     console.log('error');
-                     this.setState({isLoading:true});
-                     browserHistory.push("/Quizes");
-                }else if(!userDetail.hasOwnProperty('admin') || userDetail['admin'] === false) {
-                    localStorage.setItem("isAdmin",false);
-                    for (var quizIdValue of quizIds) {
-                        firebase.database().ref('QuizDetail').child(quizIdValue).on('value', (data) => {
-                            var quizIdData = data.val();
-                            if (quizIdData != null) {
-                                quizDataArray.push(quizIdData);
-                                if (quizDataArray.length === quizIds.length) {
-                                    this.setState({isLoading:true});
-                                   browserHistory.push({
-                                      pathname: '/QuizesDisplayPage',
-                                      search: '',
-                                      state: {
-                                        quizIdsArray: quizIds,
-                                        quizDetailsArray: quizDataArray,
-                                      }
-                                   });
-                                }
-                             } else {
-                                    this.setState({isLoading:true});
-                                    console.log('error');
-                                    browserHistory.push("/Quizes");
-                             }
-                        })
-                    }
-                } else {
-                    localStorage.setItem("isAdmin",true);
-                    browserHistory.push("/Admin");
-                }
-        })
-    }).catch((err) => {
-      if (err) {
-        alert(err);
-        this.refs.txte.focus()
-      }
-    })
-  }
+    render() {
+          const self = this;
+        return (
+              <div>
+                <MuiThemeProvider>
+                     <div style={{'textAlign': 'center', 'alignContent': 'center'}}>
+                        {
+                            self.state.isLoading && <img src={logo} alt={"loading"} style={loaderStyle}/>
+                        }
+                        {
+                            !self.state.isLoading &&
+                             <Paper style={loginPaperStyle}  >
+                                    <div height={'100%'} style={{'display': 'flex', 'flexDirection': 'column', 'margin': '5% 5% 5% 5%','alignItems':'center', 'textAlign':'center'}}>
+                                        <div>
+                                        <h1 style={{'color': 'white'}}>Login</h1>
+                                        </div>
+                                        <div style={{'display': 'flex', 'flexDirection': 'column', 'padding': '10% 10% 10% 10%','alignItems':'center', 'textAlign':'center'}}>
+                                        <TextField autoComplete={"off"}  width={'50%'} type="text"
+                                            value={self.state.textValue} hintText="UserEmail" floatingLabelText="Email"
+                                            ref="txte" onChange={e => this.setState({textValue: e.target.value})}/>
+                                        <TextField autoComplete={"off"} width={'50%'}
+                                            type="password" value={self.state.passwordValue} hintText="Password"
+                                            floatingLabelText="Password" ref="pass"
+                                            onChange={e => self.setState({passwordValue: e.target.value})}/>
+                                        </div>
+                                      <div>
+                                            <RaisedButton onClick={this.onLoginClicked}>Login</RaisedButton>
 
-
-  render() {
-    return (
-      <div>
-        <center>
-        <div>
-        {this.state.isLoading && <img src={logo} alt={"loading"} style={loaderStyle}/>}
-        </div>
-        <MuiThemeProvider>
-        {!this.state.isLoading &&
-          <Paper style={this.state.isLoading ? styleCopy : style} zDepth={3} >
-            <h1 style={style1}>Login</h1>
-            <TextField type="email" hintText="UserEmail" floatingLabelText="Email" ref="txte" /> <br />
-            <TextField type="password" hintText="Password" floatingLabelText="Password" ref="pass" /> <br />
-            <br /><RaisedButton onClick={this.login} primary={true}><span style={style2}> Login </span></RaisedButton><br />
-          </Paper> }
-      </MuiThemeProvider>
-      </center>
-      </div>
-    )
-  }
+                                      </div>
+                                        </div>
+                              </Paper>
+                         }
+                     </div>
+              </MuiThemeProvider>
+          </div>
+          )
+    }
 }
-
-export default Login;  
+export default Login;
