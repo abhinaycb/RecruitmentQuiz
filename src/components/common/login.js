@@ -54,24 +54,25 @@ class Login extends Component {
                   self.setState({isLoading: false});
                   return;
               }
-              getUserDataForUser(currentUser).then((data) => {
+              firebase.database().ref('users').child(currentUser.uid).once('value').then((data) => {
                   const userDetail = data.val();
-                  const quizIds = Object.keys(userDetail['quizIds']);
                   if (!userDetail.hasOwnProperty('admin') || userDetail['admin'] === false) {
-                        global.currentComponent.setState({value: 'Logout'});
-                        localStorage.setItem("userId", currentUser.uid);
-                      if (quizIds === null || quizIds.length === 0) {
-                          self.setState({isLoading: false});
-                      }else {
+                      const quizIdsObjectArray = userDetail['quizIds'];
+                      global.currentComponent.setState({value: 'Logout'});
+                      localStorage.setItem("userId", currentUser.uid);
+                      if (quizIdsObjectArray !== null && quizIdsObjectArray !== undefined && quizIdsObjectArray !== {} ) {
                           self.setState({isLoading:false},(data) => (
                               browserHistory.push({
                                   pathname: '/QuizesDisplayPage',
                                   search: '',
                                   state: {
-                                      'quizIdsArray': quizIds
+                                      'quizIdsArray': Object.keys(quizIdsObjectArray)
                                   }
                               })
                           ));
+                      }else {
+                          self.setState({isLoading: false});
+                          alert("No quiz Data Available for the user")
                       }
                   } else {//admin case
                         global.currentComponent.setState({value: 'Logout'});
@@ -81,11 +82,11 @@ class Login extends Component {
                   }
               }).catch(function (error) {
                   // Handle Errors here.
-                  //self.setState({isLoading: false,error: true,errorObject:error});
+                  self.setState({isLoading: false,error: true,errorObject:error},alert("problem getting data from user node",error));
               });
           }).catch(function (error) {
               // Handle Errors here.
-              //self.setState({isLoading: false,error: true, errorObject:error});
+              self.setState({isLoading: false,error: true, errorObject:error}, alert("Login Failed",error));
           });
     }
 

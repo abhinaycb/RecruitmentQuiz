@@ -30,8 +30,8 @@ export default class Admin extends React.Component {
             <div>
 
                 <Tabs value={this.state.selectedTab} onChange={this.handleSelectedTab} inkBarStyle={{background: 'red'}} >
-                    <Tab label="CreateQuiz" value="0" style={{background: '#55506E'}}/>
-                    <Tab label="Invite To A Quiz" value="1" style={{background: '#55506E'}}/>
+                    <Tab label="Quizzes" value="0" style={{background: '#55506E'}}/>
+                    <Tab label="Questions" value="1" style={{background: '#55506E'}}/>
                     <Tab label="Candidates" value="2" style={{background: '#55506E'}}/>
                 </Tabs>
                 {this.state.selectedTab === '0' && <CreateQuiz />}

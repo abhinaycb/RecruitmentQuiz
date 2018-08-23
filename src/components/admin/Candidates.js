@@ -1,8 +1,9 @@
 import React from 'react';
-import {Dialog, Table, TableBody, Subheader} from 'material-ui';
+import {Dialog, Table, TableBody, Subheader, RaisedButton} from 'material-ui';
 import RenderedRow from './RenderedRow.js';
 import logo from '../../Assets/newloader.gif';
 import {getAllUsersQuiz} from '../../NetworkCalls.js';
+import {Link} from "react-router";
 
 const textStyle = {
     color:'white',
@@ -28,11 +29,11 @@ export default class Candidates extends React.Component {
                     isLoading:false
                 });
             }else{
-                alert('error');
+                print('error');
                 self.setState({isLoading:false});
             }
         }).catch( (error) => {
-            alert(error);
+            print('error',error);
             self.setState({isLoading:false});
         })
     }
@@ -59,6 +60,7 @@ export default class Candidates extends React.Component {
                 </Table>
                 <Dialog open={Boolean(self.state.selectedRow)}/></div>
             }
+            <Link to="/signup"><RaisedButton type="submit" primary={true}>Sign Up A User</RaisedButton></Link>
             {self.state.isLoading && <div style={{'width': "30%", 'margin': '160px auto'}}><img src={logo} alt={"loading"}/></div>}
             </div>
         )

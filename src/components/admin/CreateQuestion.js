@@ -3,7 +3,7 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { browserHistory } from 'react-router'
 import { RaisedButton, TextField } from 'material-ui';
 import Paper from 'material-ui/Paper';
-import { saveQuizDataIntoServer } from '../../NetworkCalls.js'
+import { saveQuizDataIntoServer } from '../../NetworkCalls.js';
 
 const style = {
     height: 550,
@@ -53,10 +53,10 @@ export default class CreateQuestion extends React.Component {
             let newQuestionsArray = this.state.addedQuestionArray;
             newQuestionsArray.push(QuizQuestion);
             this.setState({addedQuestionArray: newQuestionsArray});
-            saveQuizDataIntoServer(this.state.detail,newQuestionsArray);
-            browserHistory.push('/Admin')
+          //  saveQuizDataIntoServer(this.state.detail,newQuestionsArray).then((data) => {ev.preventDefault();browserHistory.push('/Admin');}).catch((error)=>{alert(error)});
+
         }
-        ev.preventDefault();
+
     }
 
     onClickNextQuestion(ev) {

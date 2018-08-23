@@ -24,20 +24,59 @@ export function signupWithFirebase(email,pass) {
 }
 
 export function saveUserInFirebase(userName,email,userId) {
-	firebase.database().ref('users').child(userId).set({'name':userName,'email':email})
+	firebase.database().ref('users').child(userId).set({'name':userName,'email':email,'admin':false})
 }
 
-export function saveQuizDataIntoServer(quizDetail,questionArray) {
-     let keyToPush = firebase.database().ref('QuizDetail').push(quizDetail).key;
-     firebase.database().ref('QuizQuestion').child(keyToPush).set(questionArray)
+export function saveQuizDataIntoServer(quizDetail,userObject) {
+     const questionIds=quizDetail['QuestionIds'];
+
+     let savedQuizIds=[];
+     if(questionIds !== undefined && questionIds !== null) {
+        for(let quizId of questionIds) {
+            let newQuestionsIds=[];
+            firebase.database().ref('QuizQuestion').child(quizId.selectedSubject).once('value').then((snapshot)=>{
+                const totalQuestions=quizId.selectedValue;
+                let randomNumberArray=[];
+                while(randomNumberArray.length !== parseInt(totalQuestions)) {
+                    while(true) {
+                        let rand = Math.floor(Math.random() * snapshot.numChildren());
+                        if(!randomNumberArray.includes(rand)) {
+                            randomNumberArray.push(rand)
+                            let i = 0;
+                            Object.keys(snapshot.val()).forEach((key) => {
+                                if (i === rand ) {
+                                    newQuestionsIds.push(key);
+                                }
+                                i++;
+                            });
+                            break;
+                        }
+                    }
+                }
+                if(quizId===questionIds[questionIds.length-1]) {
+                    savedQuizIds.push({'quizSection':quizId.selectedSubject,'quizIds':newQuestionsIds})
+                    let newQuizId = quizDetail;
+                    newQuizId["QuestionIds"] = savedQuizIds;
+                    let keyToPush = firebase.database().ref('QuizDetail').push(newQuizId).key;
+                    if(userObject !== undefined && userObject !== null){
+                        let userRef=firebase.database().ref('users').orderByChild('email').equalTo(userObject.email)
+                        userRef.push({keyToPush:true});
+                        alert('successfully quiz invite sent');
+                    }else{
+                        alert('successfully quiz created with no user invited');
+                    }
+                }else {
+                    savedQuizIds.push({'quizSection':quizId.selectedSubject,'quizIds':newQuestionsIds})
+                }
+            }).catch((error) => {
+                alert(error)
+            })
+        }
+     }
 }
 
 export function getAllUsersQuiz() {
     return firebase.database().ref('users').once('value')
-}
-
-export function getUserDataForUser(currentUser) {
-    return firebase.database().ref('users').child(currentUser.uid).once('value')
 }
 
 export default function getUserDataForEmail(email) {

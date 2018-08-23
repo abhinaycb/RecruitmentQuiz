@@ -55,8 +55,10 @@ class Bar extends Component {
         const isAdmin = localStorage.getItem("isAdmin");
         if(isAdmin === null || isAdmin === undefined || isAdmin === "false") {
             browserHistory.push('/QuizesDisplayPage');
+            //not push
         }else{
             browserHistory.push('/Admin');
+            //not push
         }
     }
 

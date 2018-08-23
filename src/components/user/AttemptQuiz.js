@@ -6,7 +6,6 @@ import { browserHistory } from 'react-router';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/action/done';
 import {RadioButton, RadioButtonGroup} from 'material-ui/RadioButton';
-import {getQuizQuestionsForQuizId, getQuizDetailsForQuizId} from '../../NetworkCalls';
 
 const timerStyle = {
     color: "green",
@@ -80,21 +79,11 @@ export default class AttemptQuiz extends React.Component {
 
 
     componentWillMount() {
-        let don = [];
-        firebase.database().ref('QuizQuestion').child(this.state.quizId).on('value', (data) => {
-            let obj = data.val();
-            for (var prop in obj) {
-                if (obj.hasOwnProperty(prop)) {
-                    don.push(prop)
-                }
-            }
-            this.setState({
-                donors: don
-            })
-        })
+        const self=this;
 
-        firebase.database().ref('QuizDetail').child(this.state.quizId).on('value', (data) => {
+        firebase.database().ref('QuizDetail').child(this.state.quizId).once('value', (data) => {
             let obj = data.val();
+            let questionIds=obj['QuestionIds']
             this.setState({
                 Title: obj.Title,
                 Totalmarks: obj.Totalmarks,
@@ -102,42 +91,37 @@ export default class AttemptQuiz extends React.Component {
                 TotalTime: obj.Totaltime,
                 timeLeft: obj.Totaltime,
             },this.runTimer);
-        })
 
+            for(let section of questionIds) {
+                for(let questionId of section["quizIds"]) {
+                    firebase.database().ref('QuizQuestion').child(section.quizSection).child(questionId).once('value').then((data) => {
+                        let questionJson=data.val();
 
-        firebase.database().ref('QuizQuestion').child(this.state.quizId).on('value', (data) => {
-            let ques = [];
-            let obj = data.val();
-            for (var prop in obj) {
-                if (obj.hasOwnProperty(prop)) {
-                    ques.push(obj[prop]);
+                        if(self.state.questions.length === 0) {
+                                    let Question = questionJson.Question;
+                                    let op1 = questionJson.op1;
+                                    let op2 = questionJson.op2;
+                                    let op3 = questionJson.op3;
+                                    let op4 = questionJson.op4;
+                                    let Ans = questionJson.Answer;
+
+                                    self.setState({
+                                        Question: Question,
+                                        op1: op1,
+                                        op2: op2,
+                                        op3: op3,
+                                        op4: op4,
+                                        Ans: Ans,
+                                    });
+                        }
+                        self.setState({questions:[...self.state.questions,questionJson]})
+                    }).catch((error) => {
+                        alert(error)
+                    })
                 }
-            }
-
-            if(ques.length !== 0) {
-                let Question = ques[0].Question;
-                let op1 = ques[0].op1;
-                let op2 = ques[0].op2;
-                let op3 = ques[0].op3;
-                let op4 = ques[0].op4;
-                let Ans = ques[0].Answer;
-
-                this.setState({
-                    Question: Question,
-                    op1: op1,
-                    op2: op2,
-                    op3: op3,
-                    op4: op4,
-                    Ans: Ans,
-                    questions: ques
-                });
-            } else {
-                // console.log("empty array ques is and obj is",ques,obj)
             }
         })
     }
-
-
 
     onClickNextQuestion() {
         const radios = document.getElementsByName("shipSpeed");
@@ -224,64 +208,6 @@ export default class AttemptQuiz extends React.Component {
             }
         }, 1000)})
     }
-
-    // componentWillMount() {
-    //     let don = [];
-    //     firebase.database().ref('QuizQuestion').child(this.state.quizId).on('value', (data) => {
-    //         let obj = data.val();
-    //         for (var prop in obj) {
-    //             if (obj.hasOwnProperty(prop)) {
-    //                 don.push(prop)
-    //             }
-    //         }
-    //         this.setState({
-    //             donors: don
-    //         })
-    //     })
-    //
-    //     firebase.database().ref('QuizDetail').child(this.state.quizId).on('value', (data) => {
-    //         let obj = data.val();
-    //         this.setState({
-    //             Title: obj.Title,
-    //             Totalmarks: obj.Totalmarks,
-    //             TotalQuestion: obj.TotalQuestion,
-    //             TotalTime: obj.Totaltime,
-    //             timeLeft: obj.Totaltime,
-    //         },this.runTimer);
-    //     })
-    //
-    //
-    //     firebase.database().ref('QuizQuestion').child(this.state.quizId).on('value', (data) => {
-    //         let ques = [];
-    //         let obj = data.val();
-    //         for (var prop in obj) {
-    //             if (obj.hasOwnProperty(prop)) {
-    //                 ques.push(obj[prop]);
-    //             }
-    //         }
-    //
-    //         if(ques.length !== 0) {
-    //             let Question = ques[0].Question;
-    //             let op1 = ques[0].op1;
-    //             let op2 = ques[0].op2;
-    //             let op3 = ques[0].op3;
-    //             let op4 = ques[0].op4;
-    //             let Ans = ques[0].Answer;
-    //
-    //             this.setState({
-    //                 Question: Question,
-    //                 op1: op1,
-    //                 op2: op2,
-    //                 op3: op3,
-    //                 op4: op4,
-    //                 Ans: Ans,
-    //                 questions: ques
-    //             });
-    //         } else {
-    //             // console.log("empty array ques is and obj is",ques,obj)
-    //         }
-    //     })
-    // }
 
     componentWillUnmount() {
         clearInterval(this.state.timer);

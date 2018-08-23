@@ -37,7 +37,7 @@ export default class RenderedRow extends Component {
                     self.setState({quizAttemptedScoreData: [...self.state.quizAttemptedScoreData, resultValue]})
                 }
             }).catch((error)=>{
-                alert(error);
+                print(error);
             })
         }
 
@@ -50,7 +50,7 @@ export default class RenderedRow extends Component {
                     self.setState({quizes: quizes});
                 }
             }).catch((error)=>{
-                alert(error);
+                print(error);
             })
         }
     }
