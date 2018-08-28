@@ -9,3 +9,196 @@ html,body{
     height: 100%;
 }
 
+.zoom_on_hover {
+    transition-duration: 0.5s;
+}
+.zoom_on_hover:hover {
+    cursor: pointer;
+    -ms-transform: scale(1.1); /* IE 9 */
+    -webkit-transform: scale(1.1); /* Safari 3-8 */
+    transform: scale(1.1);
+}
+
+.card-cover{
+    background-image: -webkit-linear-gradient(right, #ff8d8d, #e90079);
+    background-image: -moz-linear-gradient(right, #ff8d8d, #e90079);
+    background-image: -ms-linear-gradient(right, #ff8d8d, #e90079);
+    background-image: -o-linear-gradient(right, #ff8d8d, #e90079);
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#ff8d8d', EndColorStr='#e90079')";
+    filter: 'as';
+}
+
+
+.product-card{
+    box-shadow: 3px 3px 20px 0px rgb(154, 80, 80);
+    padding: 10px 10px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    margin: auto;
+    width:30%;
+    height: 30%;
+    min-width: 200px;
+}
+
+.card-link{
+    text-decoration: none;
+    background-color: #55506E;
+    margin: 5px auto 30px auto;
+}
+
+.card-link .product-title{
+    text-align: center;
+    color: #000;
+}
+
+.card-link  p{
+    color: #000;
+}
+
+img{
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    position:relative;
+    display: flex;
+    height: 30%;
+    flex-wrap: wrap;
+    flex-direction: row;
+    align-content: center;
+    width: auto;
+    margin:4% 6% 4% 6%;
+}
+
+.parentDiv {
+    display:'flex';
+    flex-direction:'column';
+    overflow-y:'scroll';
+}
+
+nav {
+    position: relative;
+    --duration: .5s;
+    --easing: ease-in-out;
+    position: relative;
+    height: auto;
+    align-content:center;
+    text-align:center;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    width:60%;
+    margin:auto;
+  }
+  nav ol {
+    list-style-type: none;
+    align-items: center;
+    align-content: center;
+  }
+  nav li {
+    margin: 3px 0px 5px 0px;
+    height: 100%;
+    width: 100%;
+  }
+  nav a {
+    display: block;
+    text-decoration: none;
+    background: #55506E;
+    transform-origin: 0 0;
+    transition: transform var(--duration) var(--easing), color var(--duration) var(--easing);
+    transition-delay: var(--delay-out);
+    border-radius: 4px;
+    padding: auto auto 40px auto;
+    align-items: center;
+    align-content: center;
+    text-align: center;
+    width:100%;
+    height: auto;
+  }
+  nav a:hover {
+    background: #8A83AC;
+  }
+  
+  nav header {
+    font-weight: 600;
+    display: block;
+    background: #55506E;
+    transform-origin: 0 0;
+    transition: transform var(--duration) var(--easing), color var(--duration) var(--easing);
+    transition-delay: var(--delay-out);
+    border-radius: 4px;
+    margin: 10px 20px 20px 40px;
+    height: 20px;
+    padding: 5px 0px 20px 0px;
+    width:100%;
+    font-size: 1.5em;
+    font-weight: 700;
+  }
+  nav header span {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    line-height: 1;
+    float: right;
+  }
+  nav footer button {
+    position: absolute;
+    top:10px;
+    left:10px;
+    height: 40px;
+    margin: 10px 20px 20px 40px;
+    padding: 5px 0px 20px 0px;
+    width:100%;
+    border: none;
+    transform-origin: 0 0;
+    transition: transform var(--duration) var(--easing);
+    transition-delay: calc(var(--duration) + (.1s * (var(--count) / 2)));
+    cursor: pointer;
+    outline: none;
+    opacity: 0;
+    font-size: 1.5em;
+    font-weight: 700;
+  }
+  
+ .container.closed {
+        position:absolute;
+        display: flex;
+        height: auto;
+        flex-wrap: wrap;
+        flex-direction: row;
+        align-content: center;
+        width: auto;
+        margin:auto;
+        top: 200px;
+  }
+
+  nav.closed header {
+    transform: translateY(calc(var(--top) * -1)) scaleY(0.1) scaleX(0.2);
+    transition-delay: var(--delay-in);
+    color: transparent;
+    background: transparent;
+  }
+  
+  nav.closed a {
+    transform: translateY(calc(var(--top) * -1)) scaleY(0.1) scaleX(0.2);
+    transition-delay: var(--delay-in);
+    color: transparent;
+  }
+  
+  nav.closed footer button {
+    transition-delay: 0s;
+    background: #55506E;
+    color:white;
+    opacity: 1;
+  }
+  
+  .materialuiTextfield {
+    overflow: hidden;
+    width:45%;
+    text-align: center;
+  }
+  

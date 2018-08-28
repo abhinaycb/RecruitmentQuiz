@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Dialog, FlatButton, Tabs, Tab, TableRow, TableRowColumn } from 'material-ui';
+import { Dialog, FlatButton, Tabs, Tab, TableRow, TableRowColumn, Table, TableBody, TableHeader } from 'material-ui';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import {getQuizDataForUnattemptedQuizes,getScoreDataForAttemptedQuizzes} from '../../NetworkCalls.js';
 
@@ -37,7 +37,7 @@ export default class RenderedRow extends Component {
                     self.setState({quizAttemptedScoreData: [...self.state.quizAttemptedScoreData, resultValue]})
                 }
             }).catch((error)=>{
-                print(error);
+                console.log(error);
             })
         }
 
@@ -50,7 +50,7 @@ export default class RenderedRow extends Component {
                     self.setState({quizes: quizes});
                 }
             }).catch((error)=>{
-                print(error);
+                console.log(error);
             })
         }
     }
@@ -72,15 +72,14 @@ export default class RenderedRow extends Component {
     render() {
         const self = this;
         let {
-            children, _, ...rest
+            _, ...rest
         } = this.props;
 
         const actions = [
             <FlatButton label="Cancel" primary={true} onClick={this._handleClose}/>,
          ]
         return (
-            <TableRow {...rest}>
-                {children[0]}
+            <TableRow >
                 <TableRowColumn>{rest.data["name"]}</TableRowColumn>
                 <TableRowColumn>{rest.data["email"]}</TableRowColumn>
                 <TableRowColumn>
@@ -90,26 +89,24 @@ export default class RenderedRow extends Component {
                         <Tabs>
                             <Tab label="Existing Quizes" >
                                 <div>
-                                    <h2>Attempted Quizes</h2>
-                                    <table>
-                                        <tbody>
+                                    <Table>
+                                        <TableHeader>Attempted Quizes</TableHeader>
+                                        <TableBody>
                                             {self.state.quizes.map((row, index) => (
-                                                 <tr key={index}>
-                                                    <td>{row['Title']}</td>
-                                                    <td>{row['Totalmarks']} </td>
-                                                    <td>{row['Totalmarks']}</td>
-                                                </tr>
+                                                 <TableRow key={index}>
+                                                    <TableRowColumn>{row['Title']}</TableRowColumn>
+                                                    <TableRowColumn>{row['Totalmarks']} </TableRowColumn>
+                                                    <TableRowColumn>{row['Totalmarks']}</TableRowColumn>
+                                                </TableRow>
                                             ))}
-                                          </tbody>
-                                    </table>
+                                        </TableBody>
+                                    </Table>
                                 </div>
                             </Tab>
                             <Tab label="Invite To A Quiz" >
                                 <div>
                                     <h2>QuizLists</h2>
-                                    <p>
-                                    {self.state.quizAttemptedScoreData}
-                                    </p>
+                                    <p>{self.state.quizAttemptedScoreData}</p>
                                 </div>
                             </Tab>
                         </Tabs>

@@ -7,11 +7,13 @@ import Admin from './components/admin/Admin'
 import Bar from './components/common/appbar'
 import CreateQuiz from './components/admin/CreateQuiz'
 import AttemptQuiz from './components/user/AttemptQuiz'
-import CreateQuestion from './components/admin/CreateQuestion'
+import QuestionDisplay from './components/admin/QuestionDisplay'
 import NoQuizes from './components/user/NoQuizes'
 import Result from './components/common/result'
 import QuizesDisplayPage from './components/user/QuizesDisplayPage'
 import RenderedTableRow from './components/admin/RenderedRow'
+import InviteAndCreateQuiz from './components/admin/InviteAndCreateQuiz'
+import CreateQuestion from './components/admin/CreateQuestion'
 
 class App extends Component {
     render() {
@@ -24,11 +26,13 @@ class App extends Component {
                     <Route path="Admin" component={Admin}/>
                     <Route path="CreateQuiz" component={CreateQuiz}/>
                     <Route path="AttemptQuiz" component={AttemptQuiz}/>
+                    <Route path="QuestionDisplay" component={QuestionDisplay} />
                     <Route path="CreateQuestion" component={CreateQuestion} />
                     <Route path="NoQuizes" component={NoQuizes}/>
                     <Route path="result" component={Result}/>
                     <Route path="QuizesDisplayPage" component={QuizesDisplayPage} />
                     <Route path="RenderedTableRow" component={RenderedTableRow}/>
+                    <Route path="InviteAndCreateQuiz" component={InviteAndCreateQuiz}/>
                  </Route>
             </Router>
         )

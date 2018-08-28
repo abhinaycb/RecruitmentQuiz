@@ -1,22 +1,28 @@
 import React from 'react';
-import "../../css/QuizesDisplayPage.css";
 import { browserHistory } from 'react-router';
 import {defaultImageUrl} from '../../config.js';
 import * as firebase from 'firebase';
 import logo from '../../Assets/newloader.gif';
+import '../../css/site.css';
 
 const newloaderStyle = {
     width: "40%",
     margin: '200px auto'
 };
 
+const headingStyle= {
+    fontFamily: "Comic Sans MS",
+    fontSize: 12,
+}
+
 export default class QuizesDisplayPage extends React.Component {
 
     constructor(props) {
         super(props);
         this.getQuizDataForQuizId=this.getQuizDataForQuizId.bind(this);
-        this.onItemClick=this.onItemClick.bind(this);
-        this.getQuizData=this.getQuizData.bind(this);
+        this.onCardClick=this.onCardClick.bind(this);
+        this.getQuizDataForAdmin=this.getQuizDataForAdmin.bind(this);
+        this.updateLayout=this.updateLayout.bind(this);
         this.state={isLoading: true, quizCardArray: [], loadedFromAdmin:false};
     }
 
@@ -30,14 +36,15 @@ export default class QuizesDisplayPage extends React.Component {
         if (quizIdsArray === null || quizIdsArray === undefined || quizIdsArray.length === 0) {
             quizIdsArray=this.props.data.quizIdArray;
             if(quizIdsArray === null || quizIdsArray === undefined || quizIdsArray.length === 0) {
+                //loaded from user
                 browserHistory.push('/NoQuizes');
             }else{
-                this.setState({loadedFromAdmin:true},this.getQuizData(quizIdsArray))
+                //loaded from admin
+                this.setState({loadedFromAdmin:true},this.getQuizDataForAdmin())
             }
         } else {
             this.addChildHandleRef = firebase.database().ref('users').child(localStorage.getItem('userId')).child('quizIds').on('child_added', ((snapshot) => {
                 self.setState({isLoading: true});
-                const quizIdAttemptedFlagValue=snapshot.val();
                 self.getQuizDataForQuizId(snapshot.key).then((quizData) => {
                     const quizNodeValue = quizData.val();
                     if (quizNodeValue!==undefined && quizNodeValue !== null) {
@@ -50,19 +57,18 @@ export default class QuizesDisplayPage extends React.Component {
                         }, (() => {
                             if (self.props.location.state.quizIdsArray.length <= self.state.quizCardArray.length) {
                                 if (self.props.location.state.quizIdsArray.length < self.state.quizCardArray.length) {
-                                    self.props.location.state.quizIdsArray = [...self.props.location.state.quizIdsArray, {
-                                        'quizKey': quizData.key,
-                                        'quizValue': quizNodeValue,
-                                        'quizActive': true,
-                                    }]
+                                    self.props.location.state.quizIdsArray = [...self.props.location.state.quizIdsArray, snapshot.key]
                                 }
                                 self.setState({isLoading: false})
                             }
                         }))
+                    }else{
+                        self.setState({isLoading: false},alert('quizData not available'))
                     }
+                }).catch((err)=>{
+                    self.setState({isLoading: false},alert(err))
                 })
             }))
-
 
             this.deleteChildHandleRef = firebase.database().ref('users').child(localStorage.getItem('userId')).child('quizIds').on('child_removed', ((snapshot) => {
                 self.setState({isLoading: true})
@@ -96,28 +102,48 @@ export default class QuizesDisplayPage extends React.Component {
         }
     }
 
-    getQuizData(quizIds) {
+    updateLayout(flag){
+        this.refs.container.classList.toggle('closed');
+    }
+
+    getQuizDataForAdmin() {
         const self=this;
-        for(let quizId of quizIds[0]) {
-            this.getQuizDataForQuizId(quizId).then((data)=>{
-                const quizNodeValue = data.val();
+        let quizObjects=[];
+        self.setState({isLoading: true});
+        if(this.addChildHandleRef===undefined||this.addChildHandleRef===null) {
+            this.addChildHandleRef = firebase.database().ref('QuizDetail').on('child_added', ((snapshot) => {
+                const quizNodeValue = snapshot.val();
                 if (quizNodeValue!==undefined && quizNodeValue !== null) {
+                    quizObjects=[...quizObjects, {
+                        'quizKey': snapshot.key,
+                        'quizValue': quizNodeValue,
+                        'quizActive': true,
+                    }];
                     self.setState({
-                        quizCardArray: [...self.state.quizCardArray, {
-                            'quizKey': data.key,
-                            'quizValue': quizNodeValue,
-                            'quizActive': true,
-                        }]
+                        quizCardArray: quizObjects
                     }, (() => {
-                        if (quizIds[0].length <= self.state.quizCardArray.length) {
+                        if (self.props.data.quizIdArray.length <= self.state.quizCardArray.length) {
+                            if (self.props.data.quizIdArray.length < self.state.quizCardArray.length) {
+                                self.props.data.quizIdArray = [...self.props.data.quizIdArray, snapshot.key]
+                            }
                             self.setState({isLoading: false})
                         }
                     }))
                 }
-            }).catch((error)=>{
-                alert(error)
-            })
+            }))
+        }else{
+            self.setState({isLoading: false});
         }
+
+        this.deleteChildHandleRef = firebase.database().ref('QuizDetail').on('child_removed', ((snapshot) => {
+            self.setState({isLoading: true})
+            let quizCardsArray=[...self.state.quizCardArray]; // make a separate copy of the array
+            self.props.data.quizIdArray = self.props.data.quizIdArray.filter(x => x !== snapshot.key)
+            self.setState({
+                isLoading: false,
+                quizCardArray: quizCardsArray.filter((x) => x.quizKey !== snapshot.key)
+            });
+        }))
     }
 
     getQuizDataForQuizId(key)
@@ -129,74 +155,59 @@ export default class QuizesDisplayPage extends React.Component {
     {
         let filteredArray=this.state.quizCardArray.filter(cardValue => cardValue.quizActive === true);
         return (
-            < div
-                className="container" > {!this.state.isLoading && filteredArray.length !== 0 ?
+
+            <div className="container" ref='container'> {!this.state.isLoading && filteredArray.length !== 0 ?
                     filteredArray.map((item, index) => (
-                        < div className="card zoom_on_hover"
-                            key={index} >
-                        < div
-                            className="card-link" >
-                        < div
-                            className="card-cover" / >
-                        < div
-                            className="product-card" >
-                        < img
-                            src={((item.quizValue['hero-image-s3-key'] === null || item.quizValue['hero-image-s3-key'] === '' ||
-                            item.quizValue['hero-image-s3-key'] === undefined) ? defaultImageUrl : item.quizValue['hero-image-s3-key'])
-                             }
-                            alt={index}
-                            onClick={this.onItemClick}
-                        />
-                        < /div>
-                        < div
-                            style={{'textAlign':'center', 'align':'center', 'overflowWrap': 'break-word', 'color':'white'}}>
-                            <h1 > {item.quizValue['Title']}</h1><h1>{item.quizValue['TotalQuestion']}</h1 >
-                        < /div>
-                        < /div>
-                        < /div>
+                        <div className="card zoom_on_hover" key={index}>
+                        <div className="card-link">
+                            <div className="card-cover"/>
+                            <div className="product-card">
+                                <img src={((item.quizValue['hero-image-s3-key'] === null || item.quizValue['hero-image-s3-key'] === '' ||
+                                    item.quizValue['hero-image-s3-key'] === undefined) ? defaultImageUrl : item.quizValue['hero-image-s3-key'])}
+                                    alt={index}
+                                    onClick={() => this.onCardClick(item)}
+                                />
+                            </div>
+                            <div style={{'textAlign':'center', 'align':'center', 'overflowWrap': 'break-word', 'color':'white',margin:'20px 20px'}}>
+                                <h1 style={headingStyle}> {item.quizValue['Title']}</h1>
+                            </div>
+                        </div>
+                        </div>
                     ))
-                    : <div style={newloaderStyle} >
-                      < img src={logo} alt={"loading"}/>
+                    : <div style={newloaderStyle}>
+                         <img src={logo} alt={"loading"}/>
                       </div >
                 }
             </div>
         )
     }
 
-    onItemClick(event)
+    onCardClick(item)
     {
-        event.preventDefault();
-        browserHistory.push({
-            pathname: '/AttemptQuiz',
-            search: '',
-            state: {quizId: this.state.quizCardArray[event.target.alt].quizKey}
-        });
+        if(this.state.loadedFromAdmin) {
+            this.props.callbackFunction(item)
+        }else {
+            browserHistory.push({
+                pathname: '/AttemptQuiz',
+                search: '',
+                state: {quizId: item.quizKey}
+            });
+        }
     }
-
-    // addChildHandle()
-    // {
-    //     const self=this;
-    //
-    // }
-    //
-    // deleteChildHandle()
-    // {
-    //     const self=this;
-    //
-    // }
-    //
-    // changeChildHandle()
-    // {
-    //     const self=this;
-    //
-    // }
 
     componentWillUnMount()
     {
-        this.addChildHandleRef.off();
-        this.deleteChildHandleRef.off();
-        this.changeChildHandleRef.off();
+        if(this.addChildHandleRef!==undefined) {
+            this.addChildHandleRef.off();
+            this.addChildHandleRef=undefined;
+        }
+        if(this.deleteChildHandleRef!==undefined) {
+            this.deleteChildHandleRef.off();
+            this.deleteChildHandleRef=undefined;
+        }
+        if(this.changeChildHandleRef!==undefined) {
+            this.changeChildHandleRef.off();
+            this.changeChildHandleRef=undefined;
+        }
     }
-
-
 }

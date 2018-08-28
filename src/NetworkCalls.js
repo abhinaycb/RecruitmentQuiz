@@ -37,7 +37,7 @@ export function saveQuizDataIntoServer(quizDetail,userObject) {
             firebase.database().ref('QuizQuestion').child(quizId.selectedSubject).once('value').then((snapshot)=>{
                 const totalQuestions=quizId.selectedValue;
                 let randomNumberArray=[];
-                while(randomNumberArray.length !== parseInt(totalQuestions)) {
+                while(randomNumberArray.length !== parseInt(totalQuestions,10)) {
                     while(true) {
                         let rand = Math.floor(Math.random() * snapshot.numChildren());
                         if(!randomNumberArray.includes(rand)) {
@@ -57,12 +57,13 @@ export function saveQuizDataIntoServer(quizDetail,userObject) {
                     savedQuizIds.push({'quizSection':quizId.selectedSubject,'quizIds':newQuestionsIds})
                     let newQuizId = quizDetail;
                     newQuizId["QuestionIds"] = savedQuizIds;
-                    let keyToPush = firebase.database().ref('QuizDetail').push(newQuizId).key;
                     if(userObject !== undefined && userObject !== null){
+                        const keyToPush = firebase.database().ref('QuizDetail').push(newQuizId).key;
                         let userRef=firebase.database().ref('users').orderByChild('email').equalTo(userObject.email)
                         userRef.push({keyToPush:true});
                         alert('successfully quiz invite sent');
                     }else{
+                        firebase.database().ref('QuizDetail').push(newQuizId);
                         alert('successfully quiz created with no user invited');
                     }
                 }else {

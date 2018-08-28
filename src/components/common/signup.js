@@ -9,7 +9,8 @@ const style = {
     height: "600px",
     width: "60%",
     padding: 20,
-     margin: "20px 0px 20px 0px",
+     margin: "auto",
+    textAlign: 'center',
 };
 
 class Signup extends Component {
@@ -42,10 +43,10 @@ class Signup extends Component {
 
     render() {
         return (
-                <div style={{'align':'center'}}>
+                <div>
                     <Paper style={style} zDepth={3} >
-                        <h1  style={{'color': "rgb(0, 188, 212)"}}>Signup</h1>
-                        <TextField type="text" hintText="Name" floatingLabelText="Full Name" ref="name"/> <br/>
+                        <h1  style={{'color': "rgb(0, 188, 212)"}}>Signup</h1><br /><br /><br /><br /><br />
+                        <TextField type="text" hintText="Name" floatingLabelText="Full Name" ref="name"/><br />
                         <TextField type="email" hintText="Email" floatingLabelText="E-mail" ref="txte" /> <br />
                         <TextField type="password"  hintText="Password" floatingLabelText="Password" ref="pass" /><br /><br />
                         <RaisedButton primary={true} onClick={this.signup} ><span style={{'color': "white"}}> SIGNUP </span>  </RaisedButton>
