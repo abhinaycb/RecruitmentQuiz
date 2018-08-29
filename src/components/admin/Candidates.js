@@ -1,15 +1,9 @@
 import React from 'react';
-import { Table, TableBody, Subheader, RaisedButton} from 'material-ui';
+import { Table, TableBody, RaisedButton} from 'material-ui';
 import RenderedRow from './RenderedRow.js';
 import logo from '../../Assets/newloader.gif';
 import {getAllUsersQuiz} from '../../NetworkCalls.js';
-import {Link} from "react-router";
-
-const textStyle = {
-    color:'white',
-    fontSize:22,
-    backgroundColor:'rgb(120, 188, 212)',
-};
+import Signup from '.././common/signup';
 
 const divStyle={
     width: "30%",
@@ -20,8 +14,9 @@ export default class Candidates extends React.Component {
 
     constructor(props) {
         super(props);
-        this.selectRow = this.selectRow.bind(this);
-        this.state = {users:[],isLoading:true};
+        this.selectRow=this.selectRow.bind(this);
+        this.onClickSignup=this.onClickSignup.bind(this);
+        this.state = {users:[],isLoading:true,isSignupVisible:false};
     }
 
     componentDidMount() {
@@ -41,6 +36,11 @@ export default class Candidates extends React.Component {
         })
     }
 
+    onClickSignup() {
+        this.setState({isSignupVisible:!this.state.isSignupVisible})
+
+    }
+
     selectRow(index) {
         this.setState({selectedRow:index})
     }
@@ -50,15 +50,13 @@ export default class Candidates extends React.Component {
         return (
             <div>
             {!self.state.isLoading &&
-                <div>
-                    <Subheader style={textStyle}>
-                        <Link to="/signup">
-                            <RaisedButton type="submit" primary={true}
-                                style={{'backgroundColor':'clear', width:'200px', 'textAlign':'center','align':'center'}}>
-                                Sign Up A User
-                            </RaisedButton>
-                        </Link>
-                    </Subheader>
+                <div style={{'alignItems':'center','alignContent':'center','textAlign':'center', paddingTop:'10px'}}>
+                    <RaisedButton type="submit" primary={true}
+                        style={{'backgroundColor':'clear', width:'200px', 'textAlign':'center',margin:'auto'}} onClick={this.onClickSignup}>
+                        Sign Up A User
+                    </RaisedButton>
+                 
+                    {self.state.isSignupVisible && <Signup />}
                     <Table multiSelectable={true} style={{'backgroundColor':'#12'}} >
                         <TableBody deselectOnClickaway={true} stripedRows>
                             {self.state.users.map((row, index) => (

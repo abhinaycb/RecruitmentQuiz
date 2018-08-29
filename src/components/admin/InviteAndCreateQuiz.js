@@ -4,23 +4,9 @@ import {saveQuizDataIntoServer} from "../../NetworkCalls";
 import * as firebase from 'firebase';
 import $ from 'jquery';
 import '../../css/site.css';
+import { white } from 'material-ui/styles/colors';
 
-const dropdownstyle = {textColor:'#b2b2b2',width:'256px',marginLeft:'-20px',textAlign:'left'};
-
-const styles = {
-    root: {
-      backgroundColor: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
-      borderRadius: 3,
-      border: 0,
-      color: 'green',
-      height: 48,
-      padding: '0 30px',
-      boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
-    },
-    label: {
-      textTransform: 'capitalize',
-    },
-  };
+const dropdownstyle = {textColor:'white',width:'256px',marginLeft:'-20px',textAlign:'left'};
 
 export default class InviteAndCreateQuiz extends React.Component {
 
@@ -108,9 +94,9 @@ export default class InviteAndCreateQuiz extends React.Component {
                     </DropDownMenu>
                 </a></li>
                 {this.state.selectedIndex!==0 && this.createSections()}
-                <li className="menu-item" style={{backgroundColor:'clear'}}><a href="#0">
+                <li><a href="#0" style={{backgroundColor:'transparent'}}>
                     <RaisedButton style={{width:'40%'}} primary={true} onClick={this.createQuestions} >
-                        <span style={{'color':'white'}}>Submit Quiz</span>
+                        <span style={{'color':'white','background':'#55506E'}}>Submit Quiz</span>
                     </RaisedButton></a></li>
             </ol><footer><button aria-label="Toggle Menu" onClick={this.menuButtonClicked}>Create Quiz</button></footer>
             <Dialog open={this.state.isActiveDialogue} >
@@ -124,6 +110,7 @@ export default class InviteAndCreateQuiz extends React.Component {
     }
 
     menuButtonClicked(e) {
+      const self=this;  
       e.preventDefault();
       const $els = $('.menu a');
       const count = $els.length;
@@ -145,10 +132,10 @@ export default class InviteAndCreateQuiz extends React.Component {
           $(this).css('--delay-out',(count-j)*.1+'s');
       });
       $('.menu').toggleClass('closed');
-      if(this.refs.menu.className==='menu closed'){
-        setTimeout(()=>{this.props.toggleClicked(this.refs.menu.className==='menu closed')},1000);
+      if(self.refs.menu.className==='menu closed'){
+        setTimeout(()=>{self.props.toggleClicked()},1000);
       }else{
-        this.props.toggleClicked(this.refs.menu.className==='menu closed')
+        self.props.toggleClicked(self.refs.menu.className==='menu closed')
       }
       
       e.stopPropagation();

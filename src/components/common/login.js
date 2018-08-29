@@ -114,7 +114,7 @@ class Login extends Component {
                                             onChange={e => self.setState({passwordValue: e.target.value})}/>
                                     </div>
                                     <div>
-                                        <RaisedButton onClick={this.onLoginClicked}>Login</RaisedButton>
+                                        <RaisedButton onClick={this.onLoginClicked}><span style={{'backgroundColor':'#55506E'}}>Login</span></RaisedButton>
                                     </div> 
                                 </div>
                               </Paper>}

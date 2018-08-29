@@ -1,6 +1,0 @@
-.classes-state-root {
-    overflow-y:visible;
-}
-.classes-state-root.disabled {
-    overflow-y:hidden;
-}

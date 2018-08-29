@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import {
     Dialog,
     TableBody,
@@ -79,6 +78,7 @@ export default class CreateQuiz extends React.Component {
 
     toggleClickedInCreateQuiz(flag){
         $('.container').toggleClass('closed');
+        $('.card').toggleClass('closed');
     }
 
 

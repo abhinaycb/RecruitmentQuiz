@@ -1,30 +1,21 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,300);
 
-.optin-container {
-    background: rgb(149, 190, 184);
-    color: #212121;
-    font-family: "Source Sans Pro";
-    font-size: 16px;
-    padding: 2rem 2rem;
-    display: flex;
-    justify-content: center;
-    flex-flow: row wrap;
-    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
-    margin: 20px 20px;
-}
-
 .cta {
-  background: #E52B50;
+  background: #55506E;
   color: white;
   cursor: pointer;
   display: block;
-  font-size: 2rem;
+  font-size: 1.2em;
+  font-weight: 700;
   line-height: 1;
-  padding: 1.75rem 1rem;
+  padding: 1rem 1rem;
   text-align: center;
   text-decoration: none;
-  width: 100%;
+  width: 45%;
+  margin:20px auto;
   box-sizing: border-box;
+  align-items: center;
+  align-content: center;
 }
 @media screen and (max-width: 600px) {
   .cta {
@@ -34,38 +25,40 @@
 }
 
 form {
-  background: #9C2542;
+  background: rgb(239, 237, 248);
   display: flex;
   flex-flow: row nowrap;
-  padding: 1rem;
-  margin: 0;
+  padding: 10px;
+  margin: auto;
+  width:45%;
+  height:70px;
   box-sizing: border-box;
 }
 form input {
-  padding: 0.75rem;
-  margin: 0;
+  padding: 0 1rem;
 }
-form input[type="email"] {
+form input[type="number"] {
   border: none;
   font-size: 1rem;
   flex: 1;
-  outline: #E52B50;
+  outline: #55506E;
+  margin-left: 10px;
+  margin-right: 5px;
 }
-form input[type="email"]:focus {
-  outline: 0.25rem solid #E52B50;
+form input[type="number"]:focus {
+  outline: 0.25rem solid #55506E;
 }
-form input[type="submit"] {
-  background: linear-gradient(#e84263, #e52b50);
+form input[type="button"] {
+  background: linear-gradient(#55506E, rgb(154, 80, 80));
   cursor: pointer;
   color: white;
   border: none;
   font-size: 1rem;
-  margin: 0 0 0 1rem;
-  padding: 0 3rem;
   transition: all 0.25s ease-in-out;
+  margin-right: 10px;
 }
-form input[type="submit"]:hover {
-  background: linear-gradient(#e84667, #e63054);
+form input[type="button"]:hover {
+  background: linear-gradient(#55506E, rgb(154, 80, 80));
 }
 @media screen and (max-width: 600px) {
   form {
@@ -76,7 +69,7 @@ form input[type="submit"]:hover {
     margin: 0 !important;
     flex: 100%;
   }
-  form input[type="submit"] {
+  form input[type="button"] {
     margin-top: 1rem !important;
   }
 }

@@ -5,10 +5,19 @@ import FlatButton from 'material-ui/FlatButton';
 import { browserHistory } from 'react-router';
 
 const navbarStyle ={
-    background: "rgb(154, 80, 80)",
-    box: "4px 4px 4px 4px rgb(154, 80, 80)",
+    background: '#625069',
+    background: '-webkit-linear-gradient(-68deg, #55506E,rgb(154, 80, 80))',
+    background: '-o-linear-gradient(-68deg, #55506E,rgb(154, 80, 80))',
+    background: '-moz-linear-gradient(-68deg,#55506E,rgb(154, 80, 80))',
+    background: 'linear-gradient(-68deg,#55506E,rgb(154, 80, 80))',
+    box: "4px 4px 4px 4px",
     textAlign: "center",
-    align:'center',
+    align:'center'
+};
+
+const homeButtonStyle={
+    color:"white",
+    alignY: 'center'
 };
 
 class Bar extends Component {
@@ -68,8 +77,15 @@ class Bar extends Component {
        return (
            <div>
               <MuiThemeProvider>
-                  <div>
-                      <AppBar title="CoffeeBeans" style={navbarStyle} iconElementRight={titleString !== "" ? <FlatButton label={titleString}  onClick={self.signoutClicked}/> : null}  iconElementLeft={localStorage.getItem("userId") !== null ? <FlatButton label={'Home'} onClick={self.homeClicked} style={{color:"white",alignY: 'center'}}/> : null} />
+                  <div className="table100 ver6 m-b-110" style={{"minHeight": '100vh',height:'100%',borderRadius:'0px'}}>
+                      <AppBar title="CoffeeBeans" style={navbarStyle} 
+                              iconElementRight={titleString !== "" ? 
+                                <FlatButton label={titleString}  
+                                            onClick={self.signoutClicked}
+                                /> : null}  
+                              iconElementLeft={localStorage.getItem("userId") !== null ?
+                                 <FlatButton label={'Home'} onClick={self.homeClicked} 
+                                 style={homeButtonStyle}/> : null} />
                       {self.props.children}
                   </div>
               </MuiThemeProvider>
