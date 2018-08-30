@@ -7,6 +7,11 @@ import '../../css/site.css';
 import { white } from 'material-ui/styles/colors';
 
 const dropdownstyle = {textColor:'white',width:'256px',marginLeft:'-20px',textAlign:'left'};
+const submitButtonStyle={background: '#dd7234',
+    background: '-webkit-linear-gradient(-68deg, rgb(154, 80, 80),#EAC688)',
+    background:'-o-linear-gradient(-68deg, rgb(154, 80, 80),#EAC688)',
+    background: '-moz-linear-gradient(-68deg, rgb(154, 80, 80),#EAC688)',
+    background: 'linear-gradient(-68deg,rgb(154, 80, 80),#EAC688)',padding:'9px 19px'};
 
 export default class InviteAndCreateQuiz extends React.Component {
 
@@ -94,15 +99,15 @@ export default class InviteAndCreateQuiz extends React.Component {
                     </DropDownMenu>
                 </a></li>
                 {this.state.selectedIndex!==0 && this.createSections()}
-                <li><a href="#0" style={{backgroundColor:'transparent'}}>
-                    <RaisedButton style={{width:'40%'}} primary={true} onClick={this.createQuestions} >
-                        <span style={{'color':'white','background':'#55506E'}}>Submit Quiz</span>
+                <li><a style={{background:'transparent'}}>
+                    <RaisedButton style={{width:'140px'}} primary={true} onClick={this.createQuestions} >
+                        <span style={submitButtonStyle}>Submit Quiz</span>
                     </RaisedButton></a></li>
             </ol><footer><button aria-label="Toggle Menu" onClick={this.menuButtonClicked}>Create Quiz</button></footer>
             <Dialog open={this.state.isActiveDialogue} >
                     <div style={{'alignContent':'center','textAlign':'center',margin:'auto','width':'40%'}}>
                         <TextField type="number" hintText="questions" floatingLabelText="No. Of Questions" ref="questionNumber" /> <br />
-                        <RaisedButton primary={true} onClick={self.enterNumberOfQuestions} style={{'width' : '30%'}} >
+                        <RaisedButton primary={true} onClick={self.enterNumberOfQuestions} style={{'width':'30%'}} >
                             <span style={{'color':'white'}}>Submit</span>
                         </RaisedButton>
                     </div>
@@ -196,7 +201,7 @@ export default class InviteAndCreateQuiz extends React.Component {
                 TotalQuestion: totalquestion,
                 QuestionIds: questionsIdsArray,
             };
-            saveQuizDataIntoServer(quizDetail,this.state.invitedUsers[this.state.selectedInvitedUser]);
+            saveQuizDataIntoServer(quizDetail,this.state.invitedUsers[this.state.selectedInvitedUser-1]);
         }
         ev.preventDefault();
     }

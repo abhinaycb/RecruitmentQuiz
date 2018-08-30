@@ -10,6 +10,16 @@ const divStyle={
     margin: '160px auto'
 };
 
+const signupButtonStyle={
+    background: '#625069',
+    background: '-webkit-linear-gradient(-68deg, #55506E,rgb(154, 80, 80))',
+    background: '-o-linear-gradient(-68deg, #55506E,rgb(154, 80, 80))',
+    background: '-moz-linear-gradient(-68deg,#55506E,rgb(154, 80, 80))',
+    background: 'linear-gradient(-68deg,#55506E,rgb(154, 80, 80))',
+    padding: '10px 40px',
+    color:'white'
+};
+
 export default class Candidates extends React.Component {
 
     constructor(props) {
@@ -50,10 +60,10 @@ export default class Candidates extends React.Component {
         return (
             <div>
             {!self.state.isLoading &&
-                <div style={{'alignItems':'center','alignContent':'center','textAlign':'center', paddingTop:'10px'}}>
+                <div style={{'alignItems':'center','alignContent':'center','textAlign':'center', paddingTop:'10px',width:'45%',margin:'auto'}}>
                     <RaisedButton type="submit" primary={true}
-                        style={{'backgroundColor':'clear', width:'200px', 'textAlign':'center',margin:'auto'}} onClick={this.onClickSignup}>
-                        Sign Up A User
+                     onClick={this.onClickSignup}>
+                       <span style={signupButtonStyle}> Sign Up A User </span>
                     </RaisedButton>
                  
                     {self.state.isSignupVisible && <Signup />}

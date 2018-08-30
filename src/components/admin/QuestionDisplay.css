@@ -1,7 +1,7 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,300);
 
 .cta {
-  background: #55506E;
+  background:linear-gradient(#55506E, rgb(154, 80, 80));
   color: white;
   cursor: pointer;
   display: block;
@@ -11,7 +11,7 @@
   padding: 1rem 1rem;
   text-align: center;
   text-decoration: none;
-  width: 45%;
+  width: 35%;
   margin:20px auto;
   box-sizing: border-box;
   align-items: center;
@@ -25,12 +25,12 @@
 }
 
 form {
-  background: rgb(239, 237, 248);
+  background: linear-gradient(#55506E, rgb(154, 80, 80));
   display: flex;
   flex-flow: row nowrap;
   padding: 10px;
   margin: auto;
-  width:45%;
+  width:35%;
   height:70px;
   box-sizing: border-box;
 }

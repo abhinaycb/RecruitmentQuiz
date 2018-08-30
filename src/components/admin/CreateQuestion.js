@@ -12,13 +12,20 @@ const paperStyle = {
     width: '60%',
     padding: 20,
     margin: "20px 0px 20px 0px",
+    background: '#625069',
+    background: '-webkit-linear-gradient(-68deg, #55506E,rgb(154, 80, 80))',
+    background: '-o-linear-gradient(-68deg, #55506E,rgb(154, 80, 80))',
+    background: '-moz-linear-gradient(-68deg,#55506E,rgb(154, 80, 80))',
+    background: 'linear-gradient(-68deg,#55506E,rgb(154, 80, 80))',
 };
 const addmorebuttonstyle = {
     margin: "0px 20px 0px 0px"
 };
-const addmorebuttonspanstyle = {
-    color: "white",
-};
+const addmorebuttonspanstyle = {background: '#dd7234',
+background: '-webkit-linear-gradient(-68deg, rgb(154, 80, 80),#EAC688)',
+background:'-o-linear-gradient(-68deg, rgb(154, 80, 80),#EAC688)',
+background: '-moz-linear-gradient(-68deg, rgb(154, 80, 80),#EAC688)',
+background: 'linear-gradient(-68deg,rgb(154, 80, 80),#EAC688)',padding:'9px 18px',color:'white'};
 
 const dropdownItemStyle={
     textColor:'rgb(168, 164, 164)',
@@ -93,7 +100,7 @@ export default class CreateQuestion extends React.Component {
             <Paper style={paperStyle} zDepth={3} >
                 <h1>{this.state.isSubmitEnable?'Uploaded Questions':'Upload Questions!'}</h1>
             {!this.state.isSubmitEnable ?
-                <div className="table100 ver6 m-b-110" >
+                <div className="table100 ver1 m-b-110" >
                 <DropDownMenu 
                     value={
                         this.state.selectedSectionIndex===0?Constants.sectionDropDownDefaultValue
@@ -121,7 +128,7 @@ export default class CreateQuestion extends React.Component {
                 <TextField type="text" hintText="Answer" floatingLabelText="Answer" ref="Answer" /><br /><br />
                 </div>
                 
-            :  <div className="table100 ver6 m-b-110" ><table data-vertable="ver6">
+            :  <div className="table100 ver1 m-b-110" ><table data-vertable="ver1">
                     <thead>
                         <tr className="row100 head">
                             <th className="column100 column1">Question</th>
@@ -134,14 +141,8 @@ export default class CreateQuestion extends React.Component {
                     </thead>
                     {Object.keys(self.state.addedQuestionArrayObject).map((sectionKey)=>{
                         let quiestionValues=self.state.addedQuestionArrayObject[sectionKey];
-                        return  ( 
-                            <tbody>
-                                <thead>
-                                 <tr className="row100 head">
-                                    <th className="column100 column1">{sectionKey}</th>
-                                 </tr>
-                                </thead>
-                            {quiestionValues.map((question)=>
+                        return  (   
+                            quiestionValues.map((question)=>
                                  (
                                     <tr className="row100">
                                         <td className="column100 column1">{question.Question}</td>
@@ -152,7 +153,7 @@ export default class CreateQuestion extends React.Component {
                                         <td className="column100 column6">{question.Answer}</td>
                                     </tr>
                                 )
-                            )} </tbody>  
+                            )
                         )
                     })}
                 </table></div>

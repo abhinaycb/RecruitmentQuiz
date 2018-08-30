@@ -84,21 +84,38 @@ export default class CreateQuiz extends React.Component {
 
     getUserTableData() {
       return(
-        <div>
-            <Table style={{'margin':'auto','textAlign':'center','width':'100%','height':'100%'}}>
-                <TableBody><div>
-                    <TableRow>
-                        <TableRowColumn>{this.state.selectedCardValue.quizKey}</TableRowColumn>
-                        <TableRowColumn >{this.state.selectedCardValue.quizValue.Title}</TableRowColumn>
-                        <TableRowColumn>{this.state.selectedCardValue.quizValue.QuestionIds.length}</TableRowColumn>
-                    </TableRow>
-                    <TableRow>
-                        <TableRowColumn>{this.state.selectedCardValue.quizValue.TotalQuestion}</TableRowColumn>
-                        <TableRowColumn>{this.state.selectedCardValue.quizValue.Totalmarks}</TableRowColumn>
-                        <TableRowColumn>{this.state.selectedCardValue.quizValue.Passingmarks}</TableRowColumn>
-                    </TableRow></div>
-                </TableBody>
-            </Table>
+        <div className='table100 ver4 m-b-110'>
+            <table data-vertable="ver4">
+                <thead>
+                    <tr className="row100 head">
+                        <th className="column100 column1">QuizKey</th>
+                        <th className="column100 column4">Title</th>
+                        <th className="column100 column8">questionIds</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr className="row100">
+                        <td className="column100 column1">{this.state.selectedCardValue.quizKey}</td>
+                        <td className="column100 column4">{this.state.selectedCardValue.quizValue.Title}</td>
+                        <td className="column100 column8">{this.state.selectedCardValue.quizValue.QuestionIds.length}</td>
+                    </tr>
+                </tbody>
+                <thead>
+                    <tr className="row100">
+                        <th className="column100 column1">TotalQuestions</th>
+                        <th className="column100 column4">Totalmarks</th>
+                        <th className="column100 column8">Passingmarks</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr className="row100">
+                        <td className="column100 column1">{this.state.selectedCardValue.quizValue.TotalQuestion}</td>
+                        <td className="column100 column4">{this.state.selectedCardValue.quizValue.Totalmarks}</td>
+                        <td className="column100 column8">{this.state.selectedCardValue.quizValue.Passingmarks}</td>
+                    </tr>
+                </tbody> 
+            </table>
+            <textfield placeHolderText='enterUserToInvite'/>
         </div>)
     }
 

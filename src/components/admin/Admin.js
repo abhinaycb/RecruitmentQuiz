@@ -18,11 +18,11 @@ TabContainer.propTypes={
 };
 
 const tabStyle={
-    background: '#7918f2',
-    background: '-webkit-linear-gradient(-68deg, #ac32e4 , #4801ff)',
-    background: '-o-linear-gradient(-68deg, #ac32e4 , #4801ff)',
-    background: '-moz-linear-gradient(-68deg, #ac32e4 , #4801ff)',
-    background: 'linear-gradient(-68deg, #ac32e4 , #4801ff)',
+    background: '#dd7234',
+    background: '-webkit-linear-gradient(-68deg, rgb(154, 80, 80) , #EAC688)',
+    background: '-o-linear-gradient(-68deg, rgb(154, 80, 80) , #EAC688)',
+    background: '-moz-linear-gradient(-68deg, rgb(154, 80, 80) , #EAC688)',
+    background: 'linear-gradient(-68deg, rgb(154, 80, 80) , #EAC688)',
 }
 
 export default class Admin extends React.Component {
@@ -38,7 +38,7 @@ export default class Admin extends React.Component {
     render() {
         return (
             <div>
-                <Tabs value={this.state.selectedTab} onChange={this.handleSelectedTab} inkBarStyle={{background: '#EAC688'}}>
+                <Tabs value={this.state.selectedTab} onChange={this.handleSelectedTab} inkBarStyle={{background: 'rgb(154, 80, 80)',height:'5px'}}>
                     <Tab label="Quizzes" value="0" style={tabStyle}/>
                     <Tab label="Questions" value="1" style={tabStyle}/>
                     <Tab label="Candidates" value="2" style={tabStyle}/>

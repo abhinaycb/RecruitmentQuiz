@@ -6,10 +6,10 @@ import { browserHistory } from 'react-router';
 
 const navbarStyle ={
     background: '#625069',
-    background: '-webkit-linear-gradient(-68deg, #55506E,rgb(154, 80, 80))',
-    background: '-o-linear-gradient(-68deg, #55506E,rgb(154, 80, 80))',
-    background: '-moz-linear-gradient(-68deg,#55506E,rgb(154, 80, 80))',
-    background: 'linear-gradient(-68deg,#55506E,rgb(154, 80, 80))',
+    background: '-webkit-linear-gradient(-68deg,rgb(154, 80, 80),#55506E)',
+    background: '-o-linear-gradient(-68deg,rgb(154, 80, 80),#55506E)',
+    background: '-moz-linear-gradient(-68deg,rgb(154, 80, 80),#55506E)',
+    background: 'linear-gradient(-68deg,rgb(154, 80, 80),#55506E)',
     box: "4px 4px 4px 4px",
     textAlign: "center",
     align:'center'
@@ -77,7 +77,7 @@ class Bar extends Component {
        return (
            <div>
               <MuiThemeProvider>
-                  <div className="table100 ver6 m-b-110" style={{"minHeight": '100vh',height:'100%',borderRadius:'0px'}}>
+                  <div className="table100 ver1 m-b-110" style={{"minHeight": '100vh',height:'100%',borderRadius:'0px'}}>
                       <AppBar title="CoffeeBeans" style={navbarStyle} 
                               iconElementRight={titleString !== "" ? 
                                 <FlatButton label={titleString}  
