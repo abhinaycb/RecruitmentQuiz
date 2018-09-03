@@ -5,7 +5,10 @@ import {
     Table,
     TableRow,
     TableRowColumn,
-     Subheader
+     Subheader,
+     TextField,
+     DropDownMenu,
+     MenuItem,
 } from 'material-ui';
 import * as firebase from 'firebase';
 import QuizesDisplayPage from "../user/QuizesDisplayPage";
@@ -14,6 +17,11 @@ import "../../css/site.css";
 import InviteAndCreateQuiz from "./InviteAndCreateQuiz";
 import $ from 'jquery';
 
+const headerStyle={
+    fontWeight: 'bold'
+}
+const dropdownstyle = {textColor:'white',width:'256px',marginLeft:'-20px',textAlign:'left'};
+
 export default class CreateQuiz extends React.Component {
     constructor(props) {
         super(props);
@@ -21,10 +29,13 @@ export default class CreateQuiz extends React.Component {
         this.selectRow=this.selectRow.bind(this);
         this.getUserTableData=this.getUserTableData.bind(this);
         this.clearPopUp=this.clearPopUp.bind(this);
+        this.handleChangeInSelectedUser=this.handleChangeInSelectedUser.bind(this);
         this.state = {
             quizIdArray:[], 
             isCardClicked: false,
             selectedCardValue: undefined,
+            invitedUsers:[],
+            selectedInvitedUser:0,
         };
     }
 
@@ -39,6 +50,16 @@ export default class CreateQuiz extends React.Component {
         }).catch((error)=>{
             alert(error)
         })
+
+        firebase.database().ref('users').orderByChild('admin').equalTo(false).once('value').then((snapshot) => {
+            let invitedUsers=snapshot.val();
+            self.setState({
+                invitedUsers:Object.values(invitedUsers),
+            })
+        }).catch((err)=>{
+            alert(err)
+        })
+
     }
 
     clearPopUp() {
@@ -53,14 +74,15 @@ export default class CreateQuiz extends React.Component {
              <div id='id1'>
                 {self.state.isCardClicked &&
                     <Dialog open={self.state.isCardClicked}>
-                        <div>
-                            <div>
+                            <div className='table100 ver4 m-b-110'>
                                 <Subheader style={{position: 'absolute'}} onClick={self.clearPopUp} >
                                     <img src={crossLogo} alt={"loading"} style={{width:'15%',top:'-20px',left:'0px',marginLeft:'-80px',marginTop:'-90px',backgroundColor:'clear'}}/>
                                 </Subheader>
+                                <div>
+                                    {self.getUserTableData()}
+                                </div>
+                                {self.getUserDropDown()}
                             </div>
-                                {self.getUserTableData()}
-                        </div>
                     </Dialog>
                 }
                 <div className='parentDiv'>
@@ -76,6 +98,20 @@ export default class CreateQuiz extends React.Component {
         )
     }
 
+    getUserDropDown() {
+        const self=this;
+        return (
+            <DropDownMenu value={self.state.selectedInvitedUser===0?'user email to invite':self.state.invitedUsers[self.state.selectedInvitedUser - 1].email} style={dropdownstyle} onChange={this.handleChangeInSelectedUser} ref="dropdownInvitedUser" >
+                    <MenuItem key={0} value={'user email to invite'} primaryText={'user email to invite'} style={{"textColor":"rgb(168, 164, 164)","selectedTextColor":"rgb(168, 164, 164)"}}/>
+                    {self.state.invitedUsers.map((item, key) => {
+                        return (
+                        <MenuItem key={key+1} value={item.email} primaryText={item.email} style={{"color":"rgb(168, 164, 164)"}}/>
+                        )
+                    })}
+            </DropDownMenu>
+        )
+    }
+
     toggleClickedInCreateQuiz(flag){
         $('.container').toggleClass('closed');
         $('.card').toggleClass('closed');
@@ -84,43 +120,46 @@ export default class CreateQuiz extends React.Component {
 
     getUserTableData() {
       return(
-        <div className='table100 ver4 m-b-110'>
-            <table data-vertable="ver4">
+          <center>
+            <table style={{'textAlign':'center'}}>
                 <thead>
-                    <tr className="row100 head">
-                        <th className="column100 column1">QuizKey</th>
-                        <th className="column100 column4">Title</th>
-                        <th className="column100 column8">questionIds</th>
+                    <tr>
+                        <th style={headerStyle}>QuizKey</th>
+                        <th style={headerStyle}>Title</th>
+                        <th style={headerStyle}>questionIds</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className="row100">
-                        <td className="column100 column1">{this.state.selectedCardValue.quizKey}</td>
-                        <td className="column100 column4">{this.state.selectedCardValue.quizValue.Title}</td>
-                        <td className="column100 column8">{this.state.selectedCardValue.quizValue.QuestionIds.length}</td>
+                    <tr>
+                        <td>{this.state.selectedCardValue.quizKey}</td>
+                        <td>{this.state.selectedCardValue.quizValue.Title}</td>
+                        <td>{this.state.selectedCardValue.quizValue.QuestionIds.length}</td>
                     </tr>
                 </tbody>
                 <thead>
-                    <tr className="row100">
-                        <th className="column100 column1">TotalQuestions</th>
-                        <th className="column100 column4">Totalmarks</th>
-                        <th className="column100 column8">Passingmarks</th>
+                    <tr>
+                        <th style={headerStyle}>TotalQuestions</th>
+                        <th style={headerStyle}>Totalmarks</th>
+                        <th style={headerStyle}>Passingmarks</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className="row100">
-                        <td className="column100 column1">{this.state.selectedCardValue.quizValue.TotalQuestion}</td>
-                        <td className="column100 column4">{this.state.selectedCardValue.quizValue.Totalmarks}</td>
-                        <td className="column100 column8">{this.state.selectedCardValue.quizValue.Passingmarks}</td>
+                    <tr >
+                        <td>{this.state.selectedCardValue.quizValue.TotalQuestion}</td>
+                        <td>{this.state.selectedCardValue.quizValue.Totalmarks}</td>
+                        <td>{this.state.selectedCardValue.quizValue.Passingmarks}</td>
                     </tr>
                 </tbody> 
-            </table>
-            <textfield placeHolderText='enterUserToInvite'/>
-        </div>)
+            </table></center>
+        )
     }
 
 
     selectRow(data) {
         this.setState({isCardClicked:true,selectedCardValue:data})
+    }
+
+    handleChangeInSelectedUser(event, index, value) {
+        this.setState({selectedInvitedUser:index})
     }
 }

@@ -98,7 +98,7 @@ export default class CreateQuestion extends React.Component {
         <MuiThemeProvider>
             <center>
             <Paper style={paperStyle} zDepth={3} >
-                <h1>{this.state.isSubmitEnable?'Uploaded Questions':'Upload Questions!'}</h1>
+                <h1 style={{'color':'white'}}>{this.state.isSubmitEnable?'Verify Uploaded Questions':'Upload Questions!'}</h1>
             {!this.state.isSubmitEnable ?
                 <div className="table100 ver1 m-b-110" >
                 <DropDownMenu 
@@ -138,7 +138,7 @@ export default class CreateQuestion extends React.Component {
                             <th className="column100 column5">Option 4</th>
                             <th className="column100 column6">Answer</th>
                         </tr>
-                    </thead>
+                    </thead><tbody>
                     {Object.keys(self.state.addedQuestionArrayObject).map((sectionKey)=>{
                         let quiestionValues=self.state.addedQuestionArrayObject[sectionKey];
                         return  (   
@@ -156,7 +156,7 @@ export default class CreateQuestion extends React.Component {
                             )
                         )
                     })}
-                </table></div>
+                </tbody></table></div>
             }<br />
                 <RaisedButton disabled={this.state.isSubmitEnable} 
                                 primary={true}  

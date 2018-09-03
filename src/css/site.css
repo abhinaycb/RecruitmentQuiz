@@ -71,20 +71,20 @@ img{
     flex-wrap: wrap;
     flex-direction: row;
     align-content: center;
-    padding: 0 0;
+    padding: 5%;
+    margin: 5%;
 }
 
 .container.closed {
-  position:relative;
+  position: relative;
   display: flex;
   height: auto;
   flex-wrap: wrap;
   flex-direction: row;
   align-content: center;
-  width: auto;
-  margin:auto;
-  top: -550px;
-  padding: 0px 0px;
+  top: -600px;
+  padding: 5%;
+  margin:5%;
 }
 
 .parentDiv {
@@ -260,7 +260,7 @@ nav {
   align-items: center;
   justify-content: center;
   flex-wrap: wrap;
-  padding: 33px 30px;
+  padding: 33px 20px;
 }
 
 .wrap-table100 {
@@ -392,13 +392,12 @@ iframe {
 
 
   .column100 {
-    width: 130px;
-    padding-left: 25px;
+    width: 10%;
+    padding-left: 15px;
   }
   
   .column100.column1 {
     width: 265px;
-    padding-left: 42px;
   }
 
   .row100.head th {

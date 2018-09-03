@@ -27,7 +27,7 @@ const searchBarBoxStyle={
 export default class QuestionDisplay extends React.Component {
 
     constructor(props) {
-        super(props);
+        super(props)
         this.inviteUserToQuiz=this.inviteUserToQuiz.bind(this);
         this.submitButtonClicked=this.submitButtonClicked.bind(this);
         this.uploadFileClicked=this.uploadFileClicked.bind(this);
@@ -38,28 +38,55 @@ export default class QuestionDisplay extends React.Component {
 
     componentDidMount() {
         const self=this;
-        firebase.database().ref('QuizQuestion').once('value',(snapshot)=>{
-            let sections = snapshot.val();
-            for (var sectionName in sections) {
-                if (sections.hasOwnProperty(sectionName)) {
-                    self.setState({sectionNames:[...self.state.sectionNames,sectionName]});
-                    for(var question in sections[sectionName]){
-                        let questionToPush=sections[sectionName][question]
-                        questionToPush['id']=question;
-                        self.setState({questions:[...self.state.questions,questionToPush]});
+
+       firebase.database().ref('QuizQuestion').on('child_changed',(snapshot)=>{
+            let questions=snapshot.val();
+            for(var questionId in questions) {
+                if (questions.hasOwnProperty(questionId)){
+                    if(self.state.questions.includes(questions[questionId])) {
+                        questions[questionId]['id']=questionId;
+                        questions[questionId]['sectionName']=snapshot.key;
+                        // self.state.questions.find((obj)=>{return obj.id===questionId})=questions[question];
+                    }else{
+                        questions[questionId].id = questionId;
+                        self.setState({questions:[...self.state.questions,questions[questionId]]});
                     }
                 }
             }
-        }).catch((err)=>{
-            alert(err)
         })
+        let tempQuestions=self.state.questions;
+        firebase.database().ref('QuizQuestion').on('child_added',(snapshot)=>{
+            let questions=snapshot.val();
+            let sectionNames=self.state.sectionNames;
+            if(!self.state.sectionNames.includes(snapshot.key)){
+                sectionNames=[...self.state.sectionNames,snapshot.key];
+            }
+            for(var question in questions){
+                if (questions.hasOwnProperty(question)){
+                    let questionToPush=questions[question]
+                    questionToPush['id']=question;
+                    questionToPush['sectionName']=snapshot.key;
+                    tempQuestions=[...tempQuestions,questionToPush]
+                }
+            }
+            self.setState({questions:tempQuestions});
+        })
+        ////for section delete later on
+        firebase.database().ref('QuizQuestion').on('child_removed',(snapshot)=>{
+            let value=snapshot.val();
+            console.log(value);
+        })
+    }
+
+    componentWillUnmount() {
+       // firebase.database().ref('QuizQuestion').remove();
     }
 
     submitButtonClicked() {
         if(this.refs.numberOfQuestions!==undefined && this.refs.numberOfQuestions.value!=="" && parseInt(this.refs.numberOfQuestions.value,10)>0){
             this.setState({'isCreateQuestionEnable':true,fileUploaded:false,questionArrayData:{}});
         }else{
-            alert("please enter a valid number to upload the questions");
+            alert("Enter a valid number to upload the questions");
         }
         return false;
     }
@@ -276,9 +303,9 @@ export default class QuestionDisplay extends React.Component {
                         'questionsUploaded':this.state.questionArrayData}}
                     />
                 }	  
-                <div style={{width:'75%',margin:'auto',padding:'10px'}}><center>
+                <div className="table100 ver2 m-b-110" style={{width:'70%',margin:'auto',padding:'40px'}}><center>
                      <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
-                    <div className="table100 ver2 m-b-110">
+                    <div>
                      <QuestionTable onQuestionTableUpdate={this.handleQuestionTable.bind(this)} 
                         onRowAdd={this.handleAddEvent.bind(this)} 
                         onRowDel={this.handleRowDel.bind(this)} 
@@ -320,14 +347,14 @@ class QuestionTable extends React.Component {
       var filterText = this.props.filterText;
       var questions = this.props.questions.map((question) => { 
             if (question.Question.indexOf(filterText) === -1) {
-                return;
+                return [];
             }
             return (<QuestionRow onQuestionTableUpdate={onQuestionTableUpdate} 
                 question={question} onDelEvent={rowDel.bind(this)} key={question.id}/>)
       });
       return (
-        <div>
-        <img src={addQuestionIcon} style={{width:'5%'}} onClick={this.props.onRowAdd} />
+        <div className="table100 ver1 m-b-110">
+        <img src={addQuestionIcon} style={{width:'5%'}} onClick={this.props.onRowAdd} alt='img'/>
         <table data-vertable="ver1">
             <thead>
               <tr className="row100 head">
@@ -407,7 +434,7 @@ class EditableCell extends React.Component {
     render() {
       return (
         <td>
-          <input type='text' name={this.props.cellData.type} id={this.props.cellData.id} value={this.props.cellData.value} onChange={this.props.onQuestionTableUpdate}/>
+          <input style={{'background':'transparent',border:'none'}} type='text' name={this.props.cellData.type} id={this.props.cellData.id} value={this.props.cellData.value} onChange={this.props.onQuestionTableUpdate}/>
         </td>
       );
   
