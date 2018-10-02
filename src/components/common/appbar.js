@@ -1,23 +1,24 @@
 import React, { Component } from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import { AppBar } from 'material-ui';
 import FlatButton from 'material-ui/FlatButton';
 import { browserHistory } from 'react-router';
+import HomeLogo from '../../Assets/coffeebeansLogo.svg'
 
 const navbarStyle ={
-    background: '#625069',
-    background: '-webkit-linear-gradient(-68deg,rgb(154, 80, 80),#55506E)',
-    background: '-o-linear-gradient(-68deg,rgb(154, 80, 80),#55506E)',
-    background: '-moz-linear-gradient(-68deg,rgb(154, 80, 80),#55506E)',
-    background: 'linear-gradient(-68deg,rgb(154, 80, 80),#55506E)',
-    box: "4px 4px 4px 4px",
-    textAlign: "center",
-    align:'center'
+    box: '4px 4px 4px 4px',
+    textAlignY: 'center',
+    alignY:'center',
+    background: '#94A1BD',
 };
 
 const homeButtonStyle={
-    color:"white",
-    alignY: 'center'
+    color:'white',
+    alignY: 'center',
+    textAlignY: 'center',
+    fontSize: '28px',
+    fontFamily: 'Comic Sans MS',
+    background:'#01A8DA',
+    borderRadius:20.0,
 };
 
 class Bar extends Component {
@@ -37,26 +38,26 @@ class Bar extends Component {
    }
 
    signoutClicked(ev) {
+      const self=this; 
       ev.preventDefault();      
       this.setState({
         value: "Signup"
-      });
-      if(localStorage.getItem("userId") !== null) {
-          localStorage.removeItem("userId");
-          browserHistory.push('/');
-      }else {
-          if(this.state.value === "Login") {
-              this.setState({
-                  value: "Signup"
-              });
-              browserHistory.push('/');
-          }else {
-              this.setState({
-                  value: "Login"
-              });
-              browserHistory.push('/Signup');
-          }
-      }
+      }, (data) => {
+            if(localStorage.getItem('userId') !== null) {
+                localStorage.removeItem("userId");
+                browserHistory.push('/');
+            } else {
+                if(self.state.value === "Login") {
+                    this.setState({
+                        value: "Signup"
+                    },browserHistory.push('/'));
+                } else {
+                    this.setState({
+                        value: "Login"
+                    },browserHistory.push('/Signup'));
+                }
+            }
+        })
    }
 
     homeClicked(ev) {
@@ -76,28 +77,26 @@ class Bar extends Component {
        const self = this;
        return (
            <div>
-              <MuiThemeProvider>
-                  <div className="table100 ver1 m-b-110" style={{"minHeight": '100vh',height:'100%',borderRadius:'0px'}}>
-                      <AppBar title="CoffeeBeans" style={navbarStyle} 
+                  <div className="table100 ver1 m-b-110" style={{"minHeight": '50px',alignY:'center', height:'100%',borderRadius:'10px'}}>
+                      <AppBar title="" titleStyle={{'color':'#94A1BD'}} style={navbarStyle}    
                               iconElementRight={titleString !== "" ? 
-                                <FlatButton label={titleString}  
+                                <FlatButton style={homeButtonStyle} label={titleString}  
                                             onClick={self.signoutClicked}
-                                /> : null}  
+                                            /> : null}  
                               iconElementLeft={localStorage.getItem("userId") !== null ?
-                                 <FlatButton label={'Home'} onClick={self.homeClicked} 
-                                 style={homeButtonStyle}/> : null} />
+                                 <FlatButton  label={'CoffeeBeans'} icon={<img style={{width:'50px',height:'50px'}} src={HomeLogo} alt={"loading"}/>}  onClick={self.homeClicked} 
+                                 /> : null} />
                       {self.props.children}
-                  </div>
-              </MuiThemeProvider>
+                  </div>>
           </div>
        )
     }
 
     getTitleString(forPath) {
         if(forPath === undefined || forPath === null || forPath === "/" || forPath === "/Login") {
-            return ""
+            return "Signup"
         }else if(forPath === "/Signup") {
-            return ""
+            return "Login"
         }
         return "Logout"
     }

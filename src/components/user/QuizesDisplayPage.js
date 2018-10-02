@@ -2,7 +2,7 @@ import React from 'react';
 import { browserHistory } from 'react-router';
 import {defaultImageUrl} from '../../config.js';
 import * as firebase from 'firebase';
-import logo from '../../Assets/newloader.gif';
+import logo from '../../Assets/newLoader.gif';
 import '../../css/site.css';
 
 const newloaderStyle = {
@@ -32,40 +32,44 @@ export default class QuizesDisplayPage extends React.Component {
         if(this.props.location !== null && this.props.location !== undefined && this.props.location.state !== null && this.props.location.state !== undefined ) {
             quizIdsArray=this.props.location.state.quizIdsArray;
         }
-
+        //admin quizes or user quizzes desision block
         if (quizIdsArray === null || quizIdsArray === undefined || quizIdsArray.length === 0) {
             quizIdsArray=this.props.data.quizIdArray;
             if(quizIdsArray === null || quizIdsArray === undefined || quizIdsArray.length === 0) {
                 //loaded from user
-                browserHistory.push('/NoQuizes');
+                this.setState({loadedFromAdmin:true},browserHistory.push('/NoQuizes'))
             }else{
                 //loaded from admin
                 this.setState({loadedFromAdmin:true},this.getQuizDataForAdmin())
             }
         } else {
-            this.addChildHandleRef = firebase.database().ref('users').child(localStorage.getItem('userId')).child('quizIds').on('child_added', ((snapshot) => {
-                self.setState({isLoading: true});
+            this.addChildHandleRef = firebase.database().ref('users').child(localStorage.getItem('userId')).child('quizIds')
+            this.addChildHandleRef.on('child_added', ((snapshot) => {
                 self.getQuizDataForQuizId(snapshot.key).then((quizData) => {
                     const quizNodeValue = quizData.val();
                     if (quizNodeValue!==undefined && quizNodeValue !== null) {
-                        self.setState({
-                            quizCardArray: [...self.state.quizCardArray, {
-                                'quizKey': quizData.key,
-                                'quizValue': quizNodeValue,
-                                'quizActive': true,
-                            }]
-                        }, (() => {
-                            if (self.props.location.state.quizIdsArray.length <= self.state.quizCardArray.length) {
-                                if (self.props.location.state.quizIdsArray.length < self.state.quizCardArray.length) {
-                                    self.props.location.state.quizIdsArray = [...self.props.location.state.quizIdsArray, snapshot.key]
-                                }
-                                self.setState({isLoading: false})
-                            }
-                        }))
-                    }else{
-                        self.setState({isLoading: false},alert('quizData not available'))
+                            self.setState({
+                                    isLoading: false,
+                                    quizCardArray: [...self.state.quizCardArray, {
+                                        'quizKey': quizData.key,
+                                        'quizValue': quizNodeValue,
+                                        'quizActive': true,
+                                        }
+                                    ]
+                                },
+                                (() => {
+                                        if (self.props.location.state.quizIdsArray.length <= self.state.quizCardArray.length) {
+                                            if (self.props.location.state.quizIdsArray.length < self.state.quizCardArray.length) {
+                                                self.props.location.state.quizIdsArray = [...self.props.location.state.quizIdsArray, snapshot.key]
+                                            }
+                                        }
+                                })
+                            )
+                    } else {
+                             self.setState({isLoading: false},()=>{alert('quizData not available')})
                     }
                 }).catch((err)=>{
+                    //TODO: handle error
                     self.setState({isLoading: false},alert(err))
                 })
             }))
@@ -82,12 +86,12 @@ export default class QuizesDisplayPage extends React.Component {
 
 
             this.changeChildHandleRef = firebase.database().ref('users').child(localStorage.getItem('userId')).child('quizIds').on('child_changed',((snapshot) => {
-                // let quizCardsArray = [...self.state.quizCardArray]; // make a separate copy of the array
                 let index=self.state.quizCardArray.findIndex(x => x.quizKey===snapshot.key);
                 if (index===-1) {
-                    // handle error
+                    //TODO: handle error
                 } else {
                     self.setState({
+                        isLoading: false,
                         quizCardArray: [
                             ...self.state.quizCardArray.slice(0, index),
                             Object.assign({}, self.state.quizCardArray[index], {
@@ -109,9 +113,9 @@ export default class QuizesDisplayPage extends React.Component {
     getQuizDataForAdmin() {
         const self=this;
         let quizObjects=[];
-        self.setState({isLoading: true});
-        if(this.addChildHandleRef===undefined||this.addChildHandleRef===null) {
-            this.addChildHandleRef = firebase.database().ref('QuizDetail').on('child_added', ((snapshot) => {
+        this.addChildHandleRef = firebase.database().ref('QuizDetail')
+        if(this.addChildHandleRef!==undefined&&this.addChildHandleRef!==null) {
+            this.addChildHandleRef.on('child_added', ((snapshot) => {
                 const quizNodeValue = snapshot.val();
                 if (quizNodeValue!==undefined && quizNodeValue !== null) {
                     quizObjects=[...quizObjects, {
@@ -120,13 +124,13 @@ export default class QuizesDisplayPage extends React.Component {
                         'quizActive': true,
                     }];
                     self.setState({
-                        quizCardArray: quizObjects
+                        quizCardArray: quizObjects,
+                        isLoading: false
                     }, (() => {
                         if (self.props.data.quizIdArray.length <= self.state.quizCardArray.length) {
                             if (self.props.data.quizIdArray.length < self.state.quizCardArray.length) {
                                 self.props.data.quizIdArray = [...self.props.data.quizIdArray, snapshot.key]
                             }
-                            self.setState({isLoading: false})
                         }
                     }))
                 }
@@ -135,7 +139,8 @@ export default class QuizesDisplayPage extends React.Component {
             self.setState({isLoading: false});
         }
 
-        this.deleteChildHandleRef = firebase.database().ref('QuizDetail').on('child_removed', ((snapshot) => {
+        this.deleteChildHandleRef = firebase.database().ref('QuizDetail')
+        this.deleteChildHandleRef.on('child_removed', ((snapshot) => {
             self.setState({isLoading: true})
             let quizCardsArray=[...self.state.quizCardArray]; // make a separate copy of the array
             self.props.data.quizIdArray = self.props.data.quizIdArray.filter(x => x !== snapshot.key)
@@ -168,7 +173,7 @@ export default class QuizesDisplayPage extends React.Component {
                                     onClick={() => this.onCardClick(item)}
                                 />
                             </div>
-                            <div style={{'textAlign':'center', 'align':'center', 'overflowWrap': 'break-word', 'color':'white',margin:'20px 20px'}}>
+                            <div style={{'textAlign':'center', 'align':'center', 'overflowWrap': 'break-word', 'color':'black',margin:'20px 20px'}}>
                                 <h1 style={headingStyle}> {item.quizValue['Title']}</h1>
                             </div>
                         </div>

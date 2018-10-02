@@ -1,5 +1,4 @@
 import React from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 
 class Result extends React.Component {
     constructor(props) {
@@ -24,14 +23,12 @@ class Result extends React.Component {
     render() {
         return (
             <div>
-                <MuiThemeProvider>
                     <center>
                         <div>
                             <h1>Quiz Finished</h1>
                             <h1>Your Score {this.state.score} out of {this.state.totalMarks}</h1>
                         </div>
                     </center>
-                </MuiThemeProvider>
             </div>
         )
     }

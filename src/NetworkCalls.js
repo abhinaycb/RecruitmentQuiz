@@ -58,10 +58,10 @@ export function saveQuizDataIntoServer(quizDetail,userObject) {
                     let newQuizId = quizDetail;
                     newQuizId["QuestionIds"] = savedQuizIds;
                     if(userObject !== undefined && userObject !== null){
-                        const keyToPush = firebase.database().ref('QuizDetail').push(newQuizId).key;
-                        let userRef=firebase.database().ref('users').orderByChild('email').equalTo(userObject.email).once('value').then(data=>{
+                        firebase.database().ref('users').orderByChild('email').equalTo(userObject.email).once('value').then(data=>{
+                            const keyToPush = firebase.database().ref('QuizDetail').push(newQuizId).key;
                             data.ref.child(data.key).child('quizIds').set({keyToPush:true});
-                        }). catch(error=>alert(error))
+                        }).catch(error=>alert(error))//TODO: handle error
                         
                         alert('successfully quiz invite sent');
                     }else{
@@ -72,6 +72,7 @@ export function saveQuizDataIntoServer(quizDetail,userObject) {
                     savedQuizIds.push({'quizSection':quizId.selectedSubject,'quizIds':newQuestionsIds})
                 }
             }).catch((error) => {
+                //TODO: handle error
                 alert(error)
             })
         }

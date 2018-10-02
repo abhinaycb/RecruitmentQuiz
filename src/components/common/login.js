@@ -1,22 +1,10 @@
 import React, { Component } from 'react';
 import { browserHistory } from 'react-router'
-import { RaisedButton, TextField, Paper, MuiThemeProvider } from 'material-ui';
+import { RaisedButton, TextField, Paper } from 'material-ui';
 import { loginToFirebase } from '../../NetworkCalls.js';
 import * as firebase from 'firebase';
-import logo from '../../Assets/newloader.gif';
-// import {CreateMuiTheme} from 'material-ui';
-
-const loginPaperStyle = {
-    display:'inline-box',
-    height: "80%",
-    width: "60%",
-    border: 'solid black',
-    backgroundColor:'#EAC688',
-    alignContent: 'center',
-    alignItems: 'flex-end',
-    margin: '5% 20% 5% 20%',
-    justifyContent: 'centre',
-};
+import logo from '../../Assets/newLoader.gif';
+import {backgroundImageLogo} from '../../Assets/crossLogo.png';
 
 const loaderStyle = {
     width: '40%',
@@ -53,6 +41,7 @@ class Login extends Component {
                   self.setState({isLoading: false});
                   return;
               }
+              self.setState({isLoading: true});
               firebase.database().ref('users').child(currentUser.uid).once('value').then((data) => {
                   const userDetail = data.val();
                   if (!userDetail.hasOwnProperty('admin') || userDetail['admin'] === false) {
@@ -74,17 +63,21 @@ class Login extends Component {
                           alert("No quiz Data Available for the user")
                       }
                   } else {//admin case
-                        global.currentComponent.setState({value: 'Logout'});
-                        localStorage.setItem("userId", currentUser.uid);
-                        localStorage.setItem("isAdmin", true);
-                        browserHistory.push("/Admin");
+                        global.currentComponent.setState({value: 'Logout'})
+                        localStorage.setItem("userId", currentUser.uid)
+                        localStorage.setItem("isAdmin", true)
+                        self.setState({isLoading: false},(data) => (
+                            browserHistory.push("/Admin")
+                        ));
                   }
               }).catch(function (error) {
+                  //TODO: handle error
                   // Handle Errors here.
                   self.setState({isLoading: false,error: true,errorObject:error},alert("problem getting data from user node",error));
               });
           }).catch(function (error) {
               // Handle Errors here.
+              //TODO: handle error
               self.setState({isLoading: false,error: true, errorObject:error}, alert("Login Failed",error));
           });
     }
@@ -92,18 +85,17 @@ class Login extends Component {
     render() {
           const self = this;
         return (
-              <div>
-                <MuiThemeProvider>
-                     <div style={{'textAlign': 'center', 'alignContent': 'center'}}>
+              <div style = {{'background':{backgroundImageLogo}}}>
+                     <div style={{'textAlign': 'center','margin': '2% 2% 5% 2%'}}>
                             {
                             self.state.isLoading ? <img src={logo} alt={"loading"} style={loaderStyle}/>
                             :
-                             <Paper style={loginPaperStyle}  >
-                                <div height={'100%'} style={{'display': 'flex', 'flexDirection': 'column', 'margin': '5% 5% 5% 5%','alignItems':'center', 'textAlign':'center'}}>
+                             <Paper>
+                                <div style={{'display': 'flex', 'flexDirection': 'column','alignItems':'center','padding':'2% 2% 5% 2%', 'textAlign':'center'}}>
                                     <div>
-                                        <h1 style={{'color': 'white'}}>Login</h1>
+                                        <h1 style={{'color': 'black'}}>Login</h1>
                                     </div>
-                                    <div style={{'display': 'flex', 'flexDirection': 'column', 'padding': '10% 10% 10% 10%','alignItems':'center', 'textAlign':'center'}}>
+                                    <div style={{'display': 'flex', 'flexDirection': 'column', 'padding': '2% 5% 2% 5%','alignItems':'center', 'textAlign':'center'}}>
 
                                         <TextField autoComplete={"off"}  width={'50%'} type="text"
                                             value={self.state.textValue} hintText="UserEmail" floatingLabelText="Email"
@@ -114,12 +106,11 @@ class Login extends Component {
                                             onChange={e => self.setState({passwordValue: e.target.value})}/>
                                     </div>
                                     <div>
-                                        <RaisedButton onClick={this.onLoginClicked}><span style={{'background':'linear-gradient(#55506E, rgb(154, 80, 80))','padding':'20% 35%'}}>Login</span></RaisedButton>
+                                        <RaisedButton style={{'background':'#94A1BD'}} onClick={this.onLoginClicked}>Login</RaisedButton>
                                     </div> 
                                 </div>
                               </Paper>}
                      </div>
-              </MuiThemeProvider>
           </div>
           )
     }

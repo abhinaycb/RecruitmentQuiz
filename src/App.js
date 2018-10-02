@@ -5,15 +5,16 @@ import Login from './components/common/login'
 import Signup from './components/common/signup'
 import Admin from './components/admin/Admin'
 import Bar from './components/common/appbar'
-import CreateQuiz from './components/admin/CreateQuiz'
+import CreateQuiz from './components/admin/Tabs/Quizes/CreateQuiz'
 import AttemptQuiz from './components/user/AttemptQuiz'
-import QuestionDisplay from './components/admin/QuestionDisplay'
+import QuestionDisplay from './components/admin//Tabs/Questions/QuestionDisplay'
 import NoQuizes from './components/user/NoQuizes'
 import Result from './components/common/result'
 import QuizesDisplayPage from './components/user/QuizesDisplayPage'
-import RenderedTableRow from './components/admin/RenderedRow'
-import InviteAndCreateQuiz from './components/admin/InviteAndCreateQuiz'
-import CreateQuestion from './components/admin/CreateQuestion'
+import RenderedTableRow from './components/admin//Tabs/Candidates/RenderedRow'
+import InviteAndCreateQuiz from './components/admin//Tabs/Quizes/InviteAndCreateQuiz'
+import CreateQuestion from './components/admin//Tabs/Questions/CreateQuestion'
+import AdminHome from './components/admin/Tabs/Home/AdminHome'
 
 class App extends Component {
     render() {
@@ -33,6 +34,7 @@ class App extends Component {
                     <Route path="QuizesDisplayPage" component={QuizesDisplayPage} />
                     <Route path="RenderedTableRow" component={RenderedTableRow}/>
                     <Route path="InviteAndCreateQuiz" component={InviteAndCreateQuiz}/>
+                    <Route path="AdminHome" component={AdminHome}/>
                  </Route>
             </Router>
         )

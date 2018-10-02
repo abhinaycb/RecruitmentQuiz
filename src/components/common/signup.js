@@ -37,6 +37,7 @@ class Signup extends Component {
         })
         .catch(function (error) {
             // Handle Errors here.
+            //TODO: handle error
             alert(error.message || error.data);
         });
     }
@@ -49,7 +50,7 @@ class Signup extends Component {
                         <TextField type="text" hintText="Name" floatingLabelText="Full Name" ref="name"/><br />
                         <TextField type="email" hintText="Email" floatingLabelText="E-mail" ref="txte" /> <br />
                         <TextField type="password"  hintText="Password" floatingLabelText="Password" ref="pass" /><br /><br />
-                        <RaisedButton primary={true} onClick={this.signup} ><span style={{'color': "white"}}> SIGNUP </span>  </RaisedButton>
+                        <RaisedButton primary={true} onClick={this.signup} ><span style={{'color': "black"}}> SIGNUP </span>  </RaisedButton>
                     </Paper>
                 </div>
         )

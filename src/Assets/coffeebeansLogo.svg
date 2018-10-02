@@ -14,7 +14,7 @@
                     <g id="Capa_1">
                         <g id="Group">
                             <g id="Rectangle" transform="translate(18.807692, 64.507138)">
-                                <mask id="mask-2" fill="white">
+                                <mask id="mask-2" fill="black">
                                     <use xlink:href="#path-1"></use>
                                 </mask>
                                 <use id="Mask" fill="#242038" fill-rule="nonzero" xlink:href="#path-1"></use>
@@ -24,7 +24,7 @@
                             <g id="Rectangle-5">
                                 <path d="M196.03962,37.4338325 L21.6094967,37.4338325 L21.6094967,12.475508 C21.6094967,5.58364858 26.3462488,-7.10542736e-14 32.1851472,-7.10542736e-14 L185.470161,12.475508 C191.30906,12.475508 196.03962,18.0591566 196.03962,24.951016 L196.03962,37.4338325 Z" id="Combined-Shape" fill="#55506E" fill-rule="nonzero"></path>
                                 <g transform="translate(0.000000, 36.998980)">
-                                    <mask id="mask-4" fill="white">
+                                    <mask id="mask-4" fill="black">
                                         <use xlink:href="#path-3"></use>
                                     </mask>
                                     <use id="Mask" fill="#8A83AC" fill-rule="nonzero" xlink:href="#path-3"></use>

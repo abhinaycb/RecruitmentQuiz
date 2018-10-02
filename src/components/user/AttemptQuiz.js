@@ -1,5 +1,4 @@
 import React from 'react';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import * as firebase from "firebase";
 import Paper from 'material-ui/Paper';
 import { browserHistory } from 'react-router';
@@ -116,6 +115,7 @@ export default class AttemptQuiz extends React.Component {
                         }
                         self.setState({questions:[...self.state.questions,questionJson]})
                     }).catch((error) => {
+                        //TODO: handle error
                         alert(error)
                     })
                 }
@@ -216,7 +216,6 @@ export default class AttemptQuiz extends React.Component {
     render() {
         return (
             <div>
-                <MuiThemeProvider>
                 <div>
                     <center>
                         <Paper style={paperStyle} zDepth={3}>
@@ -250,7 +249,6 @@ export default class AttemptQuiz extends React.Component {
                         </Paper>
                     </center>
                 </div>
-                </MuiThemeProvider>
             </div>
         )
     }
