@@ -66,7 +66,7 @@ export default class CreateQuiz extends React.Component {
                     <Dialog open={self.state.isCardClicked}>
                             <div className='table100 ver4 m-b-110'>
                                 <Subheader style={{position: 'absolute'}} onClick={self.clearPopUp} >
-                                    <img src={crossLogo} alt={"loading"} style={{width:'15%',top:'-20px',left:'0px',marginLeft:'-80px',marginTop:'-90px',backgroundColor:'clear'}}/>
+                                    <img src={crossLogo} alt={"loading"} style={{width:'15%',top:'20px',left:'0px',marginLeft:'-80px',marginTop:'-90px',backgroundColor:'clear'}}/>
                                 </Subheader>
                                 <div>
                                     {self.getUserTableData()}

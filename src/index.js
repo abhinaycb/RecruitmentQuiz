@@ -5,16 +5,16 @@ import './index.css';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import {initializeFirebase} from './NetworkCalls.js';
 import getMuiTheme from "material-ui/styles/getMuiTheme";
-import {grey, amber, black} from 'material-ui/styles/colors';
+import {black} from 'material-ui/styles/colors';
 
 const muiTheme = getMuiTheme({
     palette: {
-        primary1Color: black,
-        primary2Color: black,
+        primary1Color: "#0E2A47",
+        primary2Color: "#8A83AC",
         secondaryTextColor: black,
-        accent1Color: amber,
-        pickerHeaderColor: grey,
-        textColor:black,
+        accent1Color: '#0E2A47',
+        pickerHeaderColor: 'white',
+        textColor:'black',
     },
 });
 initializeFirebase();

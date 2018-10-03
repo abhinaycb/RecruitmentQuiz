@@ -7,9 +7,8 @@ import '../../../.././css/site.css';
 import { white,gray } from 'material-ui/styles/colors';
 
 
-const dropdownstyle = {textColor:'white',width:'256px',marginLeft:'-20px',textAlign:'left'};
-const submitButtonStyle={background: '#dd7234',
-    background: 'linear-gradient(-68deg,white,gray)',padding:'9px 19px'};
+const dropdownstyle = {textColor:white,width:'256px',marginLeft:'-20px',textAlign:'left'};
+const submitButtonStyle={color:white,background: 'linear-gradient(-68deg,#0E2A47,#8A83AC)',padding:'9px 19px'};
 
 export default class InviteAndCreateQuiz extends React.Component {
 
@@ -98,7 +97,7 @@ export default class InviteAndCreateQuiz extends React.Component {
                 </a></li>
                 {this.state.selectedIndex!==0 && this.createSections()}
                 <li><a style={{background:'transparent'}}>
-                    <RaisedButton style={{width:'140px'}} primary={true} onClick={this.createQuestions} >
+                    <RaisedButton primary={true} onClick={this.createQuestions} >
                         <span style={submitButtonStyle}>Submit Quiz</span>
                     </RaisedButton></a></li>
             </ol><footer><button aria-label="Toggle Menu" onClick={this.menuButtonClicked}>Create Quiz</button></footer>

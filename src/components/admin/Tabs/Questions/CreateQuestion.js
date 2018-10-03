@@ -12,11 +12,13 @@ const paperStyle = {
     margin: "10px 0px",
     left:"0px",
     align:"center",
-    backgroundColor: '#94A1BD'
+    background:'#E6E6E6'
 };
 const addmorebuttonstyle = {
     margin: "0px 20px 0px 0px",
     background:"#625069",
+    align:'center',
+    textAlign:'center',
 };
 const addmorebuttonspanstyle = {background: '#01A8DA',padding:'9px 18px',color:'black'};
 
@@ -90,9 +92,9 @@ export default class CreateQuestion extends React.Component {
 
         return (
             <Paper style={paperStyle} zDepth={3} >
-                <h1 style={{'color':'black'}}>{this.state.isSubmitEnable?'Verify Uploaded Questions':'Upload Questions!'}</h1>
+                <h1 style={{'color':'white',background:'#8A83AC',margin:'auto',textAlign:'center'}}>{this.state.isSubmitEnable?'Verify Uploaded Questions':'Upload Questions!'}</h1>
             {!this.state.isSubmitEnable ?
-                <div className="table100 ver1 m-b-110" >
+                <center><div className="table100 ver1 m-b-110" >
                 <DropDownMenu 
                     value={
                         this.state.selectedSectionIndex===0?Constants.sectionDropDownDefaultValue
@@ -118,7 +120,7 @@ export default class CreateQuestion extends React.Component {
                 <TextField type="text" hintText="Option 3" floatingLabelText="Option 3" ref="op3" /><br />
                 <TextField type="text" hintText="Option 4" floatingLabelText="Option 4" ref="op4" /><br /><br />
                 <TextField type="text" hintText="Answer" floatingLabelText="Answer" ref="Answer" /><br /><br />
-                </div>
+                </div></center>
                 
             :  <div className="table100 ver1 m-b-110" ><table data-vertable="ver1">
                     <thead>

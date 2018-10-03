@@ -61,8 +61,7 @@ export default class RenderedRow extends Component {
     }
 
     _handleOpen(index) {
-        this.setState({})
-        this.props.callbackFunction(index)
+        this.setState({selectedRow:index,open:true},this.props.callbackFunction(index))
     }
 
     render() {

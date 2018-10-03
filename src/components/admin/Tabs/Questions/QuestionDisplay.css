@@ -1,26 +1,21 @@
 @import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,300);
 
 .cta {
-  background: rgb(123, 124, 124);
-  color: black;
+  background: #8A83AC;
+  color: white;
   cursor: pointer;
   display: block;
-  font-size: 1.5em;
+  font-size: 1.8em;
   font-weight: 700;
   line-height: 1;
-  text-align: center;
   text-decoration: none;
-  width: 100%;
-  height: 30px;
-  margin:20px 0px;
+  min-height: 40px;
   box-sizing: border-box;
-  align-items: center;
-  align-content: center;
 }
 @media screen and (max-width: 600px) {
   .cta {
     line-height: 1.4;
-    padding: 5px 5px;
+    padding: 20px 20px;
   }
 }
 

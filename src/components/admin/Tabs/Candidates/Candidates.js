@@ -11,9 +11,10 @@ const divStyle={
 };
 
 const signupButtonStyle={
-    background: '#94A1BD',
+    background: '#8A83AC',
     padding: '10px 40px',
-    color:'black'
+    color:'white',
+    borderRadius:'5px',
 };
 
 export default class Candidates extends React.Component {
@@ -55,17 +56,17 @@ export default class Candidates extends React.Component {
     render() {
         const self=this;
         return (
-            <div>
+            <div style={{margin:'20px 10px'}}>
             {!self.state.isLoading &&
-                <div style={{'alignItems':'center','alignContent':'center','textAlign':'center', paddingTop:'10px',width:'45%',margin:'auto'}}>
+                <div style={{'alignItems':'center','alignContent':'center','textAlign':'center', padding:'30px',margin:'20px',background:'linear-gradient(-68deg,rgb(221, 221, 223),rgb(255, 255, 255))'}}>
                     <RaisedButton type="submit" primary={true}
                      onClick={this.onClickSignup}>
                        <span style={signupButtonStyle}> Sign Up A User </span>
                     </RaisedButton>
                  
                     {self.state.isSignupVisible && <Signup />}
-                    <Table multiSelectable={true} style={{'backgroundColor':'#12'}} >
-                        <TableBody deselectOnClickaway={true} stripedRows>
+                    <Table multiSelectable={true} style={{'backgroundColor':'#8A83AC',margin:'10px'}} >
+                        <TableBody deselectOnClickaway={true}>
                             {self.state.users.map((row, index) => (
                                     <RenderedRow
                                         key={index}

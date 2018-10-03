@@ -48,6 +48,7 @@ class Login extends Component {
                       const quizIdsObjectArray = userDetail['quizIds'];
                       global.currentComponent.setState({value: 'Logout'});
                       localStorage.setItem("userId", currentUser.uid);
+                      localStorage.setItem("isAdmin", false)
                       if (quizIdsObjectArray !== null && quizIdsObjectArray !== undefined && quizIdsObjectArray !== {} ) {
                           self.setState({isLoading:false},(data) => (
                               browserHistory.push({
@@ -85,7 +86,7 @@ class Login extends Component {
     render() {
           const self = this;
         return (
-              <div style = {{'background':{backgroundImageLogo}}}>
+              <div>
                      <div style={{'textAlign': 'center','margin': '2% 2% 5% 2%'}}>
                             {
                             self.state.isLoading ? <img src={logo} alt={"loading"} style={loaderStyle}/>

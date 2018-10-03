@@ -5,20 +5,20 @@ import { browserHistory } from 'react-router';
 import HomeLogo from '../../Assets/coffeebeansLogo.svg'
 
 const navbarStyle ={
-    box: '4px 4px 4px 4px',
+    box: '2px 2px 2px 2px',
     textAlignY: 'center',
-    alignY:'center',
-    background: '#94A1BD',
+    alignItems:'center',
+    background: '#0E2A47',
+    height: '100%',
+    width: '100%',
 };
 
 const homeButtonStyle={
+    backgroundColor:'#8A83AC',
     color:'white',
-    alignY: 'center',
-    textAlignY: 'center',
-    fontSize: '28px',
+    fontSize: '22px',
     fontFamily: 'Comic Sans MS',
-    background:'#01A8DA',
-    borderRadius:20.0,
+    textAlignY:'center',
 };
 
 class Bar extends Component {
@@ -41,20 +41,16 @@ class Bar extends Component {
       const self=this; 
       ev.preventDefault();      
       this.setState({
-        value: "Signup"
+        value: this.state.value === "Signup" ? "Login" : (this.state.value === "Login" ? "Signup" : "NeverShoutHappenLogout")
       }, (data) => {
             if(localStorage.getItem('userId') !== null) {
                 localStorage.removeItem("userId");
                 browserHistory.push('/');
             } else {
                 if(self.state.value === "Login") {
-                    this.setState({
-                        value: "Signup"
-                    },browserHistory.push('/'));
+                   browserHistory.push('/');
                 } else {
-                    this.setState({
-                        value: "Login"
-                    },browserHistory.push('/Signup'));
+                    browserHistory.push('/Signup');
                 }
             }
         })
@@ -77,17 +73,27 @@ class Bar extends Component {
        const self = this;
        return (
            <div>
-                  <div className="table100 ver1 m-b-110" style={{"minHeight": '50px',alignY:'center', height:'100%',borderRadius:'10px'}}>
-                      <AppBar title="" titleStyle={{'color':'#94A1BD'}} style={navbarStyle}    
+                  <div className="table100 ver1 m-b-110" style={{height: '100%',width:'100%',borderRadius:'0px'}}>
+                      <AppBar style={navbarStyle}    
                               iconElementRight={titleString !== "" ? 
                                 <FlatButton style={homeButtonStyle} label={titleString}  
                                             onClick={self.signoutClicked}
                                             /> : null}  
                               iconElementLeft={localStorage.getItem("userId") !== null ?
-                                 <FlatButton  label={'CoffeeBeans'} icon={<img style={{width:'50px',height:'50px'}} src={HomeLogo} alt={"loading"}/>}  onClick={self.homeClicked} 
-                                 /> : null} />
+                                 <FlatButton style={{fontSize: '32px',
+                                    fontFamily: 'Comic Sans MS',
+                                    color:'white',height:'100px',textAlign:"center"}}
+                                    label={'CoffeeBeans'} 
+                                    icon={
+                                        <img 
+                                            style={{width:'90px',height:'90px'}} 
+                                            src={HomeLogo} alt={"loading"} />
+                                    }  onClick={self.homeClicked
+                                    } 
+                                    /> : null} 
+                                />
                       {self.props.children}
-                  </div>>
+                  </div>
           </div>
        )
     }

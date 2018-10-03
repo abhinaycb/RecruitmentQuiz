@@ -5,11 +5,18 @@ export default class AdminHome extends React.Component {
 
     constructor(props) {
         super(props)
-        
+    }
+
+
+    componentWillMount() {
+
+
+
     }
 
     render() {
-        return (<div>'fello'</div>)
+        let cardArray = [<div style={{top:'20px',centerX:'-25%',width:'40%',height:'60px'}}></div>,<div style={{top:'20px',centerX:'25%',width:'40%',height:'60px'}}></div>,<div style={{top:'100px','centerY':'-25%',width:'40%',height:'60px'}}></div>,<div style={{top:'100px',centerY:'-25%',width:'40%',height:'60px'}}></div>]
+        return (<div></div>)
     }
 
 }

@@ -5,6 +5,7 @@ import './QuestionDisplay.css';
 import CreateQuestion from './CreateQuestion';
 import * as firebase from 'firebase';
 import addQuestionIcon from '../../../../Assets/addQuestionIcon.svg';
+
 var fileReader;
 
 const emailTextBoxStyle={background: "white"};
@@ -24,9 +25,18 @@ export default class QuestionDisplay extends React.Component {
         this.submitButtonClicked=this.submitButtonClicked.bind(this);
         this.uploadFileClicked=this.uploadFileClicked.bind(this);
         this.handleFileRead=this.handleFileRead.bind(this);
-        this.formClicked=this.formClicked.bind(this);
-        this.state={isFormEnable:false,isCreateQuestionEnable:false,delimeter:'',fileUploaded:false,questionArrayData:{},filterText: "",sectionNames:[],questions:[]};
         this.questionReference = firebase.database().ref('QuizQuestion')
+        this.formClicked=this.formClicked.bind(this);
+        this.state={
+            isFormEnable:false,
+            isCreateQuestionEnable:false,
+            delimeter:'',
+            fileUploaded:false,
+            questionArrayData:{},
+            filterText: "",
+            sectionNames:[],
+            questions:[]
+        };
     }
 
     componentDidMount() {
@@ -47,14 +57,14 @@ export default class QuestionDisplay extends React.Component {
                 }
             }
         })
-        let tempQuestions=self.state.questions;
+        var sectionNames=self.state.sectionNames;
+        var tempQuestions=self.state.questions;
         this.questionReference.on('child_added',(snapshot)=>{
             let questions=snapshot.val();
-            let sectionNames=self.state.sectionNames;
-            if(!self.state.sectionNames.includes(snapshot.key)){
+            if(!sectionNames.includes(snapshot.key)){
                 sectionNames=[...self.state.sectionNames,snapshot.key];
             }
-            for(var question in questions){
+            for(let question in questions){
                 if (questions.hasOwnProperty(question)){
                     let questionToPush=questions[question]
                     questionToPush['id']=question;
@@ -62,7 +72,7 @@ export default class QuestionDisplay extends React.Component {
                     tempQuestions=[...tempQuestions,questionToPush]
                 }
             }
-            self.setState({questions:tempQuestions});
+            self.setState({questions:tempQuestions,sectionNames:sectionNames});
         })
         ////for section delete later on
         this.questionReference.on('child_removed',(snapshot)=>{
@@ -140,7 +150,7 @@ export default class QuestionDisplay extends React.Component {
             
             let arrData = [[]];
             let arrMatches = null;
-            while (arrMatches = objPattern.exec( questionsData ) ) {
+            while (arrMatches === objPattern.exec( questionsData ) ) {
                 let strMatchedDelimiter = arrMatches[1];
                 if (
                     strMatchedDelimiter.length &&
@@ -282,11 +292,11 @@ export default class QuestionDisplay extends React.Component {
 
     render() {
         return (
-        <div style={{'border':'black','borderRadius':'3px','background':'white','margin':'2% 5%','padding':'20px','top':'40px'}}>
+        <div style={{border:'black',background:'#FFFFFF',margin:'20px',textAlign:'center',width:'90%',height:'100%'}}>
                 <div className="cta" ref="cta" onClick={this.formClicked}>{this.state.isFormEnable?"Close Uploading Manually":"Create Questions Manually"} </div>
                 <form className="form hidden" ref="form">
                     <input style={emailTextBoxStyle} type="number" id="email" name="email" placeholder="enter number" ref="numberOfQuestions"/>
-                    <input style={{ background:"#94A1BD"}} type="button" value="Submit" onClick={this.submitButtonClicked}/>
+                    <input style={{background:"#94A1BD"}} type="button" value="Submit" onClick={this.submitButtonClicked}/>
                 </form>
                 {this.state.isCreateQuestionEnable && 
                     <CreateQuestion data={{'numberOfQuestion':parseInt((this.refs.numberOfQuestions!==undefined) 
@@ -295,17 +305,16 @@ export default class QuestionDisplay extends React.Component {
                         'questionsUploaded':this.state.questionArrayData}}
                     />
                 }	  
-                <div className="table100 ver2 m-b-110" style={{width:'100%',margin:'0px',padding:'0px'}}><center>
+                <center><div className="table100 ver1 m-b-110" style={{width:'100%',height:'100%'}}>
                      <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput.bind(this)}/>
-                    <div>
                      <QuestionTable onQuestionTableUpdate={this.handleQuestionTable.bind(this)} 
                         onRowAdd={this.handleAddEvent.bind(this)} 
                         onRowDel={this.handleRowDel.bind(this)} 
-                        sections={this.state.sections}
+                        sections={this.state.sectionNames}
                         questions={this.state.questions}
                         filterText={this.state.filterText}
-                     /></div></center>
-                </div>
+                     />
+                </div></center>
                 <div className="cta">Upload A File(txt,json,csv)<br /><br />    
                     <center><input style={{background:"#94A1BD"}} type='file' id='file' accept='.csv,.txt,.json' 
                         onChange={e => this.uploadFileClicked(e.target.files[0])}/></center>
@@ -334,37 +343,46 @@ class SearchBar extends React.Component {
 class QuestionTable extends React.Component {
   
     render() {
+        const self = this;
       var onQuestionTableUpdate = this.props.onQuestionTableUpdate;
       var rowDel = this.props.onRowDel;
       var filterText = this.props.filterText;
-      var questions = this.props.questions.map((question) => { 
+      var sections = this.props.sections && this.props.sections.map((section) => {
+          var questions = self.props.questions.filter((question)=> {return question.sectionName === section}).map((question) => {
             if (question.Question.indexOf(filterText) === -1) {
-                return [];
+                return []
             }
-            return (<QuestionRow onQuestionTableUpdate={onQuestionTableUpdate} 
-                question={question} onDelEvent={rowDel.bind(this)} key={question.id}/>)
+            return (
+                <QuestionRow onQuestionTableUpdate={onQuestionTableUpdate} 
+                    question={question} onDelEvent={rowDel.bind(this)} key={question.id}
+                />
+            )
+          })
+           return <tr key={section} className="row100 head"><td className="column100 column1">{section}</td>{questions}</tr>
       });
-      return (
-        <div className="table100 ver1 m-b-110">
-        <img src={addQuestionIcon} style={{width:'5%'}} onClick={this.props.onRowAdd} alt='img'/>
+      return (<center>
+        <div style={{background: 'linear-gradient(-68deg,rgb(221, 221, 223),rgb(255, 255, 255))',width:'100%',height:'100%',margin:'auto'}}>
+        <img src={addQuestionIcon} style={{width:'20px',height:'20px'}} onClick={this.props.onRowAdd} alt='img'/>
         <table data-vertable="ver1">
             <thead>
-              <tr className="row100 head">
-                <th className="column100 column1">QuestionId</th>
-                <th className="column100 column2">QuestionName</th>
-                <th className="column100 column3">Option1</th>
-                <th className="column100 column4">Option2</th>
-                <th className="column100 column5">Option3</th>
-                <th className="column100 column6">Option4</th>
-                <th className="column100 column7">Answer</th>
-              </tr>
+                <tr className="row100">
+                 <th className="column100 column1">SectionName</th>
+                 <tr className="row100 head" style={{margin:'auto',padding:'0px'}} > 
+                    <th style={{minWidth:'120px'}} className="column100 column1">QuestionId</th>
+                    <th style={{minWidth:'120px'}}  className="column100 column2">QuestionName</th>
+                    <th style={{minWidth:'120px'}}  className="column100 column3">Option1</th>
+                    <th style={{minWidth:'120px'}}  className="column100 column4">Option2</th>
+                    <th style={{minWidth:'120px'}}  className="column100 column5">Option3</th>
+                    <th style={{minWidth:'120px'}}  className="column100 column6">Option4</th>
+                    <th style={{minWidth:'120px'}}  className="column100 column7">Answer</th>
+                    <th style={{minWidth:'120px'}}  className="column100 column8">Edit/Delete</th></tr>
+                </tr>
             </thead>
-  
             <tbody>
-              {questions}
+            {sections}
             </tbody>
-          </table>
-        </div>
+        </table>
+        </div></center>
       );
     }
   }
@@ -382,37 +400,37 @@ class QuestionRow extends React.Component {
             value: this.props.question.id,
             id: this.props.question.id
           }}/>
-          <EditableCell className="column100 column1" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
+          <EditableCell className="column100 column2" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
             type: "name",
             value: this.props.question.Question,
             id: this.props.question.id
           }}/>
-          <EditableCell className="column100 column2" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
+          <EditableCell className="column100 column3" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
             type: "option1",
             value: this.props.question.op1,
             id: this.props.question.id
           }}/>
-          <EditableCell className="column100 column3" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
+          <EditableCell className="column100 column4" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
             type: "option2",
             value: this.props.question.op2,
             id: this.props.question.id
           }}/>
-          <EditableCell className="column100 column4" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
+          <EditableCell className="column100 column5" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
             type: "option3",
             value: this.props.question.op3,
             id: this.props.question.id
           }}/>
-          <EditableCell className="column100 column5" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
+          <EditableCell className="column100 column6" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
             type: "option4",
             value: this.props.question.op4,
             id: this.props.question.id
           }}/>
-          <EditableCell className="column100 column6" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
+          <EditableCell className="column100 column7" onQuestionTableUpdate={this.props.onQuestionTableUpdate} cellData={{
             type: "answer",
             value: this.props.question.Answer,
             id: this.props.question.id
           }}/>
-          <td className="column100 column7">
+          <td className="column100 column8">
             <input type="button" onClick={this.onDelEvent.bind(this)} value="X" className="del-btn"/>
           </td>
         </tr>
